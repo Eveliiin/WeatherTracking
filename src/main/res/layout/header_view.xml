@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.weathertracking.proba.HeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+
+
+        <ImageView
+            android:id="@+id/currentWeatherImageView"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/w01d"
+            android:contentDescription="@string/iconDescription" /><!--Todo ? -->
+
+        <TextView
+            android:id="@+id/currentWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/currentWeatherImageView"
+            android:layout_alignBaseline="@id/currentWeatherImageView"
+            android:layout_toStartOf="@id/refreshImageView"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            android:text="Szép, napos idő"
+            android:textSize="25dp"
+            android:layout_below="@id/locationTextView"
+            />
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="0dp"
+            android:layout_toStartOf="@+id/refreshImageView"
+            android:layout_toEndOf="@id/currentDegreeTV"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="SUSSENNIddddddddddddddI"
+            android:textSize="30sp" />
+
+        <ImageView
+            android:id="@+id/refreshImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/favorite"
+            android:background="@drawable/refreshing"
+
+            />
+        <TextView
+            android:id="@+id/currentDegreeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/currentWeatherImageView"
+            android:layout_marginStart="10dp"
+            android:text="70° C"
+            android:textSize="30sp"
+            android:gravity="center"
+            />
+
+
+
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/favorite"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/locationTextView"
+            android:layout_alignBottom="@id/locationTextView"
+            android:gravity="center" />
+        <TextView
+            android:id="@+id/lastRefreshDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/refreshImageView"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@id/currentWeather"
+            android:text="Hétfő, 13:33"
+            android:gravity="end"
+            android:textSize="18dp"
+            />
+    </RelativeLayout>
+</com.example.weathertracking.proba.HeaderView>

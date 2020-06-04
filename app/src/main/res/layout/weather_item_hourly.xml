@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:width="1dp"
+    android:background="#add8e6"
+    android:color="#000000"
+    android:orientation="vertical">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/topBar"
+    android:layout_marginBottom="2dp">
+
+    <TextView
+
+        android:id="@+id/dateTextView"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:text="May 25 15:00"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:layout_alignTop="@id/icon"
+        android:layout_alignBottom="@id/icon"/>
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/w09n"
+        android:layout_toEndOf="@id/dateTextView"/>
+
+    <TextView
+        android:id="@+id/dataTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:textSize="28sp"
+        tools:text="Scattered Clouds"
+        android:layout_alignBaseline="@id/icon"
+        android:layout_alignTop="@id/icon"
+        android:layout_alignBottom="@id/icon"
+        android:layout_toEndOf="@id/icon"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>
+
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
+
+
+
+
+        <TableRow
+            android:weightSum="4"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:id="@+id/temperatureTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_below="@id/icon"
+                android:gravity="center"
+                android:text="17°C"
+                android:textSize="28sp" />
+
+            <ImageView
+                android:id="@+id/humidityIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/humidity" />
+
+            <ImageView
+
+                android:id="@+id/pressureIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/pressure" />
+
+            <ImageView
+                android:id="@+id/windIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/wind" />
+        </TableRow>
+
+        <TableRow
+            android:weightSum="4"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:id="@+id/temperatureFeelsLikeText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="feels like"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/humidityText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="humidity:"
+                android:textAlignment="center"
+                android:textSize="15sp" />
+
+            <TextView
+
+                android:id="@+id/pressureText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="pressure:"
+                android:textAlignment="center"
+
+                android:textSize="15sp" />
+
+            <TextView
+
+                android:id="@+id/windTextText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="wind:"
+                android:textAlignment="center"
+                android:textSize="15sp" />
+        </TableRow>
+
+        <TableRow
+            android:weightSum="4"
+            android:layout_width="match_parent">
+
+            <TextView
+                android:id="@+id/temperatureFeelsLikeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="10°C"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/humidityTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="96.0%"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+
+            <TextView
+
+                android:id="@+id/pressureTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="997.0 mb"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+
+            <TextView
+
+                android:id="@+id/windTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="15 km/h"
+                android:textAlignment="center"
+                android:textSize="16sp" />
+        </TableRow>
+
+    </TableLayout>
+</RelativeLayout>
