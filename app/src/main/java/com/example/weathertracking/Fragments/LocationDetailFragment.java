@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
