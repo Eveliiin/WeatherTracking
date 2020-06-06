@@ -29,19 +29,26 @@ import com.example.weathertracking.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Utils.Favorites.getFavoriteLocationsFromSharedPref;
 
 
 public class FavoriteLocationsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private FavoriteListAdapter adapter;
     private View view;
-    private BroadcastReceiver networkActionReceiver;
     private BroadcastReceiver refreshReceiver;
-    private Boolean refreshRequired=false;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @BindView(R.id.recyclerView)
+    protected RecyclerView recyclerView;
+    @BindView(R.id.swipeRefreshLayoutFavoritesList)
+    protected  SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @BindView(R.id.favorite_search)
+    protected  SearchView searchView;
 
     public FavoriteLocationsFragment() {
         // Required empty public constructor
@@ -60,12 +67,8 @@ public class FavoriteLocationsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-
         view=inflater.inflate(R.layout.fragment_favorite_locations,container,false);
-
-        mSwipeRefreshLayout=view.findViewById(R.id.swipeRefreshLayoutFavoritesList);
-        recyclerView= view.findViewById(R.id.recyclerView);
-        SearchView searchView = view.findViewById(R.id.favorite_search);
+        ButterKnife.bind(this, view);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -105,15 +108,14 @@ public class FavoriteLocationsFragment extends Fragment {
         };
         view.getContext().registerReceiver(refreshReceiver, filter);
 
-        networkActionReceiver = new BroadcastReceiver() {
+        BroadcastReceiver networkActionReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if("DISCONNECTED".equals(intent.getStringExtra("TYPE"))){
+                if ("DISCONNECTED".equals(intent.getStringExtra("TYPE"))) {
 
                     mSwipeRefreshLayout.setEnabled(false);
-                }
-                else {
-                    if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
+                } else {
+                    if ("RECONNECTED".equals(intent.getStringExtra("TYPE"))) {
                         mSwipeRefreshLayout.setEnabled(true);
                     }
                 }
@@ -185,6 +187,7 @@ public class FavoriteLocationsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Boolean refreshRequired = false;
         if(refreshRequired){
             uploadFavorites();
         }

@@ -27,12 +27,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class WeatherFragment extends Fragment {
 
-    TextView locationTextView;
-    Handler handler;
-    List<WeatherForecastObject> weather;
+    @BindView(R.id.recyclerView)
+    protected RecyclerView recyclerView;
 
+    private Handler handler;
+    private List<WeatherForecastObject> weather;
 
     public WeatherFragment() {
         handler= new Handler();
@@ -53,13 +57,9 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_weather, container, false);
-
-        RecyclerView recyclerView= view.findViewById(R.id.recyclerView);
-
-
+        ButterKnife.bind(this, view);
         final HourlyDataAdapter adapter = new HourlyDataAdapter(getContext(),weather);
         recyclerView.setAdapter(adapter);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setHasFixedSize(true);
 
@@ -88,7 +88,6 @@ public class WeatherFragment extends Fragment {
     private void renderWeather(JSONObject json){
         try {
             String text= json.getString("name").toUpperCase(Locale.US)+","+json.getJSONObject("sys").getString("country");
-            locationTextView.setText(text);
             JSONObject details = json.getJSONArray("weather").getJSONObject(0);
 
             setWeatherIcon(details.getInt("id"),json.getJSONObject("sys").getLong("sunrise")*1000,

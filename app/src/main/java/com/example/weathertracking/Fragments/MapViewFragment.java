@@ -32,6 +32,9 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
@@ -39,7 +42,10 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     public static final String KEY1="key1";
     public static final String KEY2="key2";
 
-    private MapView mMapView;
+    @BindView(R.id.mapView)
+    protected MapView mMapView;
+
+
     private ArrayList<MapMarker> mapMarkers = new ArrayList<>();
     private GoogleMap googleMap = null;
 
@@ -47,6 +53,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_map_view, container, false);
+        ButterKnife.bind(this, view);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //SupportMapFragment mapFragment = (SupportMapFragment) getParentFragmentManager()
         //        .findFragmentById(R.id.mapView);
@@ -59,7 +66,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mMapView = view.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(this);
@@ -114,7 +120,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
         for (MapMarker it : mapMarkers) {
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(it.getLocationLat(),
-                    it.getLocationLon())).title(it.getDescription()));
+                            it.getLocationLon())).title(it.getDescription()));
             //TODO
         }
     }
