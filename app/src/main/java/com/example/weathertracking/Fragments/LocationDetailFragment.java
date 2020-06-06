@@ -48,7 +48,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.android.volley.VolleyLog.TAG;
-import static com.android.volley.VolleyLog.e;
 import static com.example.weathertracking.Activities.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Utils.CurrentLocation.getCurrentLocationFromSharedPref;
