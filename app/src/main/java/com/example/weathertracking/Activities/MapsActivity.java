@@ -26,6 +26,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     List<FavoriteLocationObject> listOfResults;
     Button mChooseButton;
     int selectionCount;
+    FavoriteLocationObject selectedLocationObject;
     LatLng selectedMarkerCord=null;
     String selectedLocation ="";
     int selectedListItemNum;
@@ -45,8 +46,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Intent sendChoosedLocation = new Intent("CHOOSED_LOCATION");
-                sendChoosedLocation.putExtra("COORDINATES",selectedMarkerCord);
-                sendChoosedLocation.putExtra("NAME",selectedLocation);
+
+                sendChoosedLocation.putExtra("SELECTED_LOCATION_OBJECT",selectedLocationObject);
                 v.getContext().sendBroadcast(sendChoosedLocation);
                 finish();
 
@@ -72,13 +73,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
         if(selectedListItemNum>-1){
-            FavoriteLocationObject selectedInList= listOfResults.get(selectedListItemNum);
+
+            selectedLocationObject= new FavoriteLocationObject(listOfResults.get(selectedListItemNum));
             float zoomLevel = 12.0f; //This goes up to 21
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedInList.getLatLng(),zoomLevel));
-
-            selectedMarkerCord=selectedInList.getLatLng();
-            selectedLocation= selectedInList.getLocationName();
-
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectedLocationObject.getLatLng(),zoomLevel));
         }
         // Set a listener for marker click.
         mMap.setOnMarkerClickListener(this);
@@ -92,8 +90,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Retrieve the data from the marker.
         Integer clickCount = (Integer) marker.getTag();
-        selectedMarkerCord=marker.getPosition();
-        selectedLocation= marker.getTitle();
+        selectedLocationObject= new FavoriteLocationObject(marker.getTitle(),marker.getPosition());
 
         // Check if a click count was set, then display the click count.
         if(selectionCount==0) {

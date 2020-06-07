@@ -2,7 +2,6 @@ package com.example.weathertracking.Services;
 
 import android.Manifest;
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.weathertracking.Activities.MainActivity;
+import com.example.weathertracking.R;
 
 public class LocationService extends IntentService
 {
@@ -51,7 +51,7 @@ public class LocationService extends IntentService
 
         String command;
         if (intent != null) {
-            command=intent.getStringExtra("Command");
+            command=intent.getStringExtra(getString(R.string.COMMAND));
             if(command!=null){
                 switch (command){
                     case "START": registerListeners();
@@ -130,7 +130,7 @@ public class LocationService extends IntentService
         // Check whether the new location fix is newer or older
         long timeElapsed = location.getTime() - currentBestLocation.getTime();
 
-        return timeElapsed > TEN_MINUTES;// nem jo, mert le lesz iratkozva IDE KELL AZ EBRESZTES
+        return timeElapsed > TEN_MINUTES;// TODO nem jo, mert le lesz iratkozva IDE KELL AZ EBRESZTES
 
     }
     private void registerListeners(){
@@ -148,13 +148,6 @@ public class LocationService extends IntentService
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 0, listener);
 
     }
-    private void sssss(){
-        /*if ( ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-            Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
-        }else {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 0, listener);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 0, listener);
-        }*/    }
 
     @Override
     public void onDestroy() {

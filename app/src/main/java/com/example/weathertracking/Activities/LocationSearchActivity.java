@@ -11,13 +11,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.Network;
 import android.os.Bundle;
-import android.telephony.AvailableNetworkInfo;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,7 +30,6 @@ import com.example.weathertracking.Models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 import com.example.weathertracking.Services.LocationService;
 import com.example.weathertracking.Utils.WeatherService;
-import com.example.weathertracking.proba.HeaderView;
 import com.example.weathertracking.weatherApi.SearchCityObject;
 import com.example.weathertracking.weatherApi.SearchCityCallResult;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +55,9 @@ import static com.example.weathertracking.weatherApi.WeatherCallMembers.AppId;
 import static com.example.weathertracking.weatherApi.WeatherCallMembers.BaseUrl;
 
 public class LocationSearchActivity extends AppCompatActivity {
+
+    static int NO_ITEM_SELECTED = -1;
+    int selecteditemNum = -1;
 
     @BindView(R.id.searchLocationsButton)
     protected Button searchLocationsButton;
@@ -79,50 +78,45 @@ public class LocationSearchActivity extends AppCompatActivity {
     protected TextView locationEditText;
 
     @BindView(R.id.locationImage)
-    protected ImageButton locationSearch;
-    List<SearchCityObject> results;
+    protected ImageButton currentLocationButton;
 
     private SearchResultAdapter adapter;
-    private String Provider;
-    private LatLng currentLatLon;
-
-    //WeatherForecastCalls forecastObject;
-    private FavoriteLocationObject favoriteLocationObject;
-    static int NO_ITEM_SELECTED=-1;
-    int selecteditemNum= -1;
-
-    private LatLng selectedLocationCoord;
-    private String selectedLocationName;
+    private ArrayList<SearchCityObject> results;
 
     private ArrayList<FavoriteLocationObject> locationsForMap;
-    private CompoundButton.OnCheckedChangeListener switchListener;
-    private BroadcastReceiver itemClickedReceiver;
+    private FavoriteLocationObject currentLocationObject;
 
+    private FavoriteLocationObject selectedLocationObject;
+
+    private BroadcastReceiver itemClickedReceiver;
     private BroadcastReceiver choosedLocationReceiver;
     private BroadcastReceiver locationReceiver;
     private BroadcastReceiver currentWeatherReceiver;
-    private BroadcastReceiver searchCitiesReceiver;
     private BroadcastReceiver networkActionReceiver;
 
+    private IntentFilter intentFilter;
     private IntentFilter currentWeatherFilter;
-    private IntentFilter searchCitiesFilter;
     private IntentFilter intentFilterLocation;
     private IntentFilter networkActionFilter;
-    private boolean isNetwork=true;
-    private boolean currentLocationIsUsed=false;
 
+    private CompoundButton.OnCheckedChangeListener switchListener;
+
+    private boolean isNetwork = true;
+    private boolean currentLocationIsUsed = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_location_search);
+        ButterKnife.bind(this);
         viewWeatherButton.setVisibility(View.INVISIBLE);
-        selecteditemNum=NO_ITEM_SELECTED;
+        selecteditemNum = NO_ITEM_SELECTED;
         switchListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                modifyFavorite(locationsForMap.get(selecteditemNum),getBaseContext());
+                modifyFavorite(locationsForMap.get(selecteditemNum), getBaseContext());
             }
         };
 
@@ -130,237 +124,147 @@ public class LocationSearchActivity extends AppCompatActivity {
 
         locationEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!currentLocationIsUsed) {
-                    searchLocation(s);
-                }
-                else {
-                    //TODO ha nem egyenlo a currentlocationnal, keressen
-                    currentLocationIsUsed=false;
+
+                if (s.length() < 4 && s.length() != 0) {
+                    tooShortCase();
+                } else {
+                    search(s);
                 }
             }
+
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
 
-        locationSearch.setOnClickListener(new View.OnClickListener() {
+        currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotation_animation);
-                locationSearch.startAnimation(aniRotate);
-                currentLocationIsUsed=true;
-                clearRecyclerView();
-                noResultsTextView.setVisibility(View.INVISIBLE);
-
+                currentLocationButton.setClickable(false);
+                locationEditText.setEnabled(false);
+                locationEditText.setText("");
+                currentLocationIsUsed = true;
+                Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotation_animation);
+                currentLocationButton.startAnimation(aniRotate);
+                hideFeatures();
                 Intent refreshLocationIntent = new Intent(LocationSearchActivity.this, LocationService.class);
-                refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
+                refreshLocationIntent.putExtra(getString(R.string.COMMAND), getString(R.string.REFRESH_LOCATION));
                 startService(refreshLocationIntent);
-
-                locationReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        Provider = intent.getStringExtra("Provider");
-                        currentLatLon=new LatLng((double)intent.getExtras().get("Latitude"),(double)intent.getExtras().get("Longitude"));
-                        favoriteLocationObject = new FavoriteLocationObject(currentLatLon);
-                        Toast.makeText(getApplicationContext(), "Current location is set!", Toast.LENGTH_SHORT).show();
-                        setCurrentWeatherReceiver();
-                        try {
-                            unregisterReceiver(locationReceiver);
-                        }
-                        catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                };
-                IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(LOCATION_KEY);
                 LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(locationReceiver, intentFilter);
             }
         });
         viewWeatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i =  new Intent(LocationSearchActivity.this, LocationDetailActivity.class);
-                if(favoriteLocationObject!=null){
-                    //current location
-                    i.putExtra(FAVORITE_LOCATION_OBJECT,favoriteLocationObject);
-                }else {// TODO terkep hosszan??
-                    //from list
-                    i.putExtra(FAVORITE_LOCATION_OBJECT,new FavoriteLocationObject(selectedLocationCoord));
+                Intent i = new Intent(LocationSearchActivity.this, LocationDetailActivity.class);
+                if (currentLocationObject != null) {//current location
+                    i.putExtra(FAVORITE_LOCATION_OBJECT, currentLocationObject);
+                } else {// TODO terkep hosszan??//from list
+                    i.putExtra(FAVORITE_LOCATION_OBJECT, selectedLocationObject);
                 }
                 startActivity(i);
                 //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
-
-        networkActionReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if("DISCONNECTED".equals(intent.getStringExtra("TYPE"))){
-                    if(recyclerView.getAdapter()!=null){
-                        Toast.makeText(context, "no internet, select a location form list or reconnect to the internet", Toast.LENGTH_LONG).show();//TODO
-                        viewWeatherButton.setVisibility(View.INVISIBLE);
-                        locationSearch.setVisibility(View.INVISIBLE);
-                        searchLocationsButton.setVisibility(View.INVISIBLE);
-                        locationEditText.setEnabled(false);
-                        isNetwork =false;
-                    }
-                    else {
-                        Toast.makeText(context, "no internet, return to the main page", Toast.LENGTH_LONG).show();//TODO
-                        unregisterReceiver(networkActionReceiver);
-                        finish();
-
-                    }
-                }
-                else {
-                    if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
-                        Toast.makeText(context, "reconnected", Toast.LENGTH_LONG).show();//TODO
-                        locationSearch.setVisibility(View.VISIBLE);
-                        locationEditText.setEnabled(true);
-                        if(selecteditemNum!=NO_ITEM_SELECTED){
-                            viewWeatherButton.setVisibility(View.VISIBLE);
-                        }
-                        if(recyclerView.getAdapter()!=null){
-                            searchLocationsButton.setVisibility(View.VISIBLE);
-                        }
-                        isNetwork =true;
-                    }
-                }
-            }
-        };
-        networkActionFilter = new IntentFilter("NETWORK_ACTION");
-        registerReceiver(networkActionReceiver,networkActionFilter);
+        initReceivers();
+        registerReceiver(networkActionReceiver, networkActionFilter);
     }
-    void searchLocation(CharSequence s){
-        viewWeatherButton.setVisibility(View.INVISIBLE);//kell e ide if vagy nem>
 
-        favoriteSwitch.setChecked(false);
-        favoriteSwitch.setClickable(false);
-        if (currentLocationIsUsed) {
+    void search(CharSequence s) {
+        if (!currentLocationIsUsed) {
+            viewWeatherButton.setVisibility(View.INVISIBLE);//kell e ide if vagy nem>
 
-            if (!s.equals(favoriteLocationObject.getLocationName())) {
-                locationEditText.setTextColor(Color.BLACK);
-
-                currentLocationIsUsed = false;
-                if (s.toString().length() == 0) {
-                    noResultsTextView.setVisibility(View.INVISIBLE);
-                    if (recyclerView.getHeight() > 0) {
-                        adapter = new SearchResultAdapter(getBaseContext(), new ArrayList<SearchCityObject>());
-                    }
-                } else {
-                    if (s.toString().length() < 3) {
-                        noResultsTextView.setText("Location name is too short!");
-                        noResultsTextView.setVisibility(View.VISIBLE);
-                        clearRecyclerView();
-                    } else {
-                        String searchString = locationEditText.getText().toString();
-                        searchLocation(searchString);
-                    }
-                }
-            }
-        } else {
-            if (s.toString().length() == 0) {
-                noResultsTextView.setVisibility(View.INVISIBLE);
-                if (recyclerView.getHeight() > 0) {
-                    adapter = new SearchResultAdapter(getBaseContext(), new ArrayList<SearchCityObject>());
+            favoriteSwitch.setChecked(false);
+            favoriteSwitch.setClickable(false);
+            if (currentLocationObject != null) {
+                if (currentLocationObject.getLocationName() != s) {
+                    locationEditText.setTextColor(Color.BLACK);
+                    currentLocationObject = null;
+                    searchLocation(s.toString());
                 }
             } else {
-                if (s.toString().length() < 3) {
-                    noResultsTextView.setText("Location name is too short!");
-                    noResultsTextView.setVisibility(View.VISIBLE);
-                    clearRecyclerView();
-                } else {
-                    String searchString = locationEditText.getText().toString();
-                    searchLocation(searchString);
-                }
-
+                searchLocation(s.toString());
             }
+        } else {
+            currentLocationIsUsed = false;
         }
+
     }
 
-    void selectItemInResultsList(int i){
+    void tooShortCase() {
+        hideFeatures();
+        noResultsTextView.setText(R.string.location_name_too_short);
+        noResultsTextView.setVisibility(View.VISIBLE);
+    }
 
-        if(selecteditemNum!= i) {
+    void hideFeatures() {
+        clearRecyclerView();
+        noResultsTextView.setVisibility(View.INVISIBLE);
+        viewWeatherButton.setVisibility(View.INVISIBLE);
 
-            if(selecteditemNum!=NO_ITEM_SELECTED){//TODO
+    }
+
+    void selectItemInResultsList(int i) {
+
+        if (selecteditemNum != i) {
+
+            if (selecteditemNum != NO_ITEM_SELECTED) {//TODO
                 recyclerView.getChildAt(selecteditemNum).setBackgroundColor(Color.parseColor("#ADD8E6"));
             }
             selecteditemNum = i;
             recyclerView.getChildAt(i).setBackgroundColor(Color.CYAN);
-            selectedLocationCoord=locationsForMap.get(i).getLatLng();
-            selectedLocationName=locationsForMap.get(i).getLocationName();
-            if(isNetwork){
+            selectedLocationObject = new FavoriteLocationObject(locationsForMap.get(i));
+            if (isNetwork) {
                 viewWeatherButton.setVisibility(View.VISIBLE);
             }
             favoriteCheck(locationsForMap.get(selecteditemNum));
 
-            Toast.makeText(getApplicationContext(), selectedLocationName + " selected!", Toast.LENGTH_SHORT).show();
-        }
-        else{
+            Toast.makeText(getApplicationContext(), selectedLocationObject.getLocationName() + " selected!", Toast.LENGTH_SHORT).show();
+        } else {
             viewWeatherButton.setVisibility(View.INVISIBLE);
             favoriteSwitch.setOnCheckedChangeListener(null);
             favoriteSwitch.setChecked(false);
             favoriteSwitch.setOnCheckedChangeListener(switchListener);
             favoriteSwitch.setClickable(false);
-            //Toast.makeText(getApplicationContext(), selectedLocationName + " deselected!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), sele + " deselected!", Toast.LENGTH_SHORT).show();
             recyclerView.getChildAt(selecteditemNum).setBackgroundColor(Color.parseColor("#ADD8E6"));
-            selectedLocationCoord = null;
-            selectedLocationName = null;
-            selecteditemNum=NO_ITEM_SELECTED;
+            selectedLocationObject = null;
+            selecteditemNum = NO_ITEM_SELECTED;
         }
     }
-    void favoriteCheck(FavoriteLocationObject favoriteLocation){
-        if(checkIfIsFavorite(favoriteLocation,getBaseContext())){
+
+    void favoriteCheck(FavoriteLocationObject favoriteLocation) {
+        if (checkIfIsFavorite(favoriteLocation, getBaseContext())) {
             favoriteSwitch.setOnCheckedChangeListener(null);
             favoriteSwitch.setChecked(true);
             favoriteSwitch.setOnCheckedChangeListener(switchListener);
-        }else {favoriteSwitch.setOnCheckedChangeListener(null);
+        } else {
+            favoriteSwitch.setOnCheckedChangeListener(null);
             favoriteSwitch.setChecked(false);
             favoriteSwitch.setOnCheckedChangeListener(switchListener);
         }
         favoriteSwitch.setClickable(true);//TODO kitenni fuggsenybe
     }
 
-    private void setCurrentWeatherReceiver(){
+    private void setCurrentWeatherReceiver() {
         //current weather receiver
-        currentWeatherFilter = new IntentFilter("CURRENT_WEATHER_SEARCH_A");
-        currentWeatherReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
 
-                if ("CURRENT_WEATHER".equals(action)) {
-
-                    CurrentWeather currentWeather =(CurrentWeather) intent.getSerializableExtra("CURRENT_WEATHER_OBJECT");
-                    favoriteLocationObject.setCurrentWeather(currentWeather);
-                    //azert igy, mert ha a setcurrentweatherbe teszem bele a setLocationNamet, osszekavarja a favoritesban
-                    favoriteLocationObject.setLocationName(currentWeather.getLocationName());
-                    locationEditText.setTextColor(Color.GREEN);
-
-                    locationEditText.setText(favoriteLocationObject.getLocationName());
-                    locationSearch.clearAnimation();
-                    viewWeatherButton.setVisibility(View.VISIBLE);
-                    try {
-                        context.unregisterReceiver(currentWeatherReceiver);
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
         registerReceiver(currentWeatherReceiver, currentWeatherFilter);
-        getCurrentWeatherByLatLng(getApplicationContext(),favoriteLocationObject.getLatLng(),LOCATION_SEARCH_A);
+        getCurrentWeatherByLatLng(getApplicationContext(), currentLocationObject.getLatLng(), LOCATION_SEARCH_A);
 
     }
-    void clearRecyclerView(){
-        adapter = new SearchResultAdapter(getBaseContext(), new ArrayList<SearchCityObject>());
-        recyclerView.setAdapter(adapter);
+
+    void clearRecyclerView() {
+        if(adapter!=null) {
+            adapter.deleteElements();
+            recyclerView.setAdapter(adapter);
+        }
         searchLocationsButton.setVisibility(View.INVISIBLE);
     }
 
@@ -377,20 +281,21 @@ public class LocationSearchActivity extends AppCompatActivity {
         itemClickedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int selectedLocationPosition= intent.getIntExtra("ITEM",0);
+                int selectedLocationPosition = intent.getIntExtra("ITEM", 0);
                 selectItemInResultsList(selectedLocationPosition);
 
             }
         };
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("LIST_ITEM_CLICKED");
-        registerReceiver(itemClickedReceiver,intentFilter);
+        registerReceiver(itemClickedReceiver, intentFilter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
+
     public void searchLocation(String searchString) {//TODO rendes nevet a valtozonak
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BaseUrl)
@@ -409,7 +314,7 @@ public class LocationSearchActivity extends AppCompatActivity {
                 if (response.code() == 200 && response.body() != null) {
 
                     final SearchCityCallResult weatherForecastResult = response.body();
-                    final ArrayList<SearchCityObject> results = new ArrayList<>(weatherForecastResult.list);
+                    results = new ArrayList<>(weatherForecastResult.list);
                     recyclerView.removeAllViews();
                     ////
                     adapter = new SearchResultAdapter(getBaseContext(), results);
@@ -429,40 +334,19 @@ public class LocationSearchActivity extends AppCompatActivity {
                     locationsForMap = new ArrayList<FavoriteLocationObject>() {
                     };
                     for (SearchCityObject m : results) {
-                        locationsForMap.add(new FavoriteLocationObject(m.name, new LatLng(m.coord.lat,m.coord.lon)));
+                        locationsForMap.add(new FavoriteLocationObject(m.name, new LatLng(m.coord.lat, m.coord.lon)));
                     }
 
                     searchLocationsButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(LocationSearchActivity.this, MapsActivity.class);
-                            intent.putExtra("CHOOSED",selecteditemNum);
+                            intent.putExtra("CHOOSED", selecteditemNum);
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("list", locationsForMap);
                             intent.putExtras(bundle);
 
-                            choosedLocationReceiver = new BroadcastReceiver() {
-                                @Override
-                                public void onReceive(Context context, Intent intent) {
-                                    selectedLocationCoord= intent.getParcelableExtra("COORDINATES");
-                                    selectedLocationName= intent.getStringExtra("NAME");
-
-                                    if(selectedLocationCoord!=null) {
-                                        for (int i=0;i<results.size();i++)
-                                        {
-                                            if(results.get(i).coord.lat==selectedLocationCoord.latitude && results.get(i).coord.lon==selectedLocationCoord.longitude){
-                                                selectItemInResultsList(i);
-                                            }
-                                        }
-
-                                    }
-                                    unregisterReceiver(choosedLocationReceiver);
-
-                                }
-                            };
-                            intentFilterLocation = new IntentFilter();
-                            intentFilterLocation.addAction("CHOOSED_LOCATION");
-                            registerReceiver(choosedLocationReceiver,intentFilterLocation);
+                            registerReceiver(choosedLocationReceiver, intentFilterLocation);
                             startActivity(intent);//TODO startActivityForResult??
                         }
                     });
@@ -474,5 +358,107 @@ public class LocationSearchActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<SearchCityCallResult> call, @NonNull Throwable t) {
             }
         });
+    }
+
+    private void initReceivers() {
+
+        //CurrentWeather, needed for locationName, and view weather option
+        currentWeatherFilter = new IntentFilter(getString(R.string.CURRENT_WEATHER_SEARCH_A));
+        currentWeatherReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+
+                if (getString(R.string.CURRENT_WEATHER_SEARCH_A).equals(action)) {
+
+                    CurrentWeather currentWeather = (CurrentWeather) intent.getSerializableExtra(getString(R.string.CURRENT_WEATHER_OBJECT));
+                    currentLocationObject.setCurrentWeather(currentWeather);
+                    //azert igy, mert ha a setcurrentweatherbe teszem bele a setLocationNamet, osszekavarja a favoritesban
+                    currentLocationObject.setLocationName(currentWeather.getLocationName());
+                    locationEditText.setTextColor(Color.GREEN);
+                    locationEditText.setText(currentLocationObject.getLocationName());
+                    locationEditText.setEnabled(true);
+                    currentLocationButton.setClickable(true);
+                    currentLocationButton.clearAnimation();
+                    viewWeatherButton.setVisibility(View.VISIBLE);
+                    favoriteCheck(currentLocationObject);
+                    try {
+                        context.unregisterReceiver(currentWeatherReceiver);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
+        //network changes
+
+        networkActionFilter = new IntentFilter(getString(R.string.NETWORK_ACTION));
+        networkActionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (getString(R.string.DISCONNECTED).equals(intent.getStringExtra("TYPE"))) {
+                    if (recyclerView.getAdapter() != null) {
+                        Toast.makeText(context, R.string.disconnected_select_from_list, Toast.LENGTH_LONG).show();//TODO
+                        viewWeatherButton.setVisibility(View.INVISIBLE);
+                        currentLocationButton.setVisibility(View.INVISIBLE);
+                        searchLocationsButton.setVisibility(View.INVISIBLE);
+                        locationEditText.setEnabled(false);
+                        isNetwork = false;
+                    } else {
+                        Toast.makeText(context, R.string.disconnected_and_exit, Toast.LENGTH_LONG).show();//TODO
+                        unregisterReceiver(networkActionReceiver);
+                        finish();
+
+                    }
+                } else {
+                    if (getString(R.string.RECONNECTED).equals(intent.getStringExtra(getString(R.string.TYPE)))) {
+                        Toast.makeText(context, R.string.reconnected_message, Toast.LENGTH_LONG).show();//TODO
+                        currentLocationButton.setVisibility(View.VISIBLE);
+                        locationEditText.setEnabled(true);
+                        if (selecteditemNum != NO_ITEM_SELECTED) {
+                            viewWeatherButton.setVisibility(View.VISIBLE);
+                        }
+                        if (recyclerView.getAdapter() != null) {
+                            searchLocationsButton.setVisibility(View.VISIBLE);
+                        }
+                        isNetwork = true;
+                    }
+                }
+            }
+        };
+        locationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                LatLng currentLatLon = new LatLng((double) intent.getExtras().get("Latitude"), (double) intent.getExtras().get("Longitude"));
+                currentLocationObject = new FavoriteLocationObject(currentLatLon);
+                setCurrentWeatherReceiver();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(locationReceiver);
+            }
+        };
+        intentFilter = new IntentFilter(LOCATION_KEY);
+
+        //search locations button
+        choosedLocationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                selectedLocationObject = (FavoriteLocationObject) intent.getSerializableExtra(getString(R.string.SELECTED_LOCATION_OBJECT));
+
+                if (selectedLocationObject != null && selectedLocationObject.getLatLng() != null) {
+                    for (int i = 0; i < results.size(); i++) {
+                        if (results.get(i).coord.lat == selectedLocationObject.getLatitude() && results.get(i).coord.lon == selectedLocationObject.getLongitude()) {
+                            selectItemInResultsList(i);
+                        }
+                    }
+                }
+
+                unregisterReceiver(choosedLocationReceiver);
+
+            }
+        };
+        intentFilterLocation = new IntentFilter(getString(R.string.CHOOSED_LOCATION));
+
     }
 }

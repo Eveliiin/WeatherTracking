@@ -33,8 +33,8 @@ public  class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapt
         this.mResultsList=new ArrayList<>(resultsList);
     }
     public void deleteElements(){
-        this.mResultsList.clear();
-        notifyDataSetChanged();
+            this.mResultsList.clear();
+            notifyDataSetChanged();
     }
 
     @NonNull
