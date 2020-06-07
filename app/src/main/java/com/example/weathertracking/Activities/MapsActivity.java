@@ -20,11 +20,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     List<FavoriteLocationObject> listOfResults;
+    @BindView(R.id.chooseButton)
     Button mChooseButton;
+
     int selectionCount;
     FavoriteLocationObject selectedLocationObject;
     LatLng selectedMarkerCord=null;
@@ -37,11 +42,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         listOfResults= (List<FavoriteLocationObject>) getIntent().getExtras().getSerializable("list");
         selectedListItemNum = getIntent().getIntExtra("CHOOSED",-2);
         setContentView(R.layout.activity_maps);
+        ButterKnife.bind(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        mChooseButton= findViewById(R.id.chooseButton);
         mChooseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +55,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 sendChoosedLocation.putExtra("SELECTED_LOCATION_OBJECT",selectedLocationObject);
                 v.getContext().sendBroadcast(sendChoosedLocation);
                 finish();
-
             }
         });
     }

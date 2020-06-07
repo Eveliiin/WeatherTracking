@@ -34,6 +34,9 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.Toast;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Services.LocationService.MY_PERMISSIONS_REQUEST_LOCATION;
 
@@ -41,13 +44,18 @@ import static com.example.weathertracking.Services.LocationService.MY_PERMISSION
 public class MainActivity extends AppCompatActivity  {
 
     public static final String LOCATION_KEY = "location";
-    FloatingActionButton locatonSearchFab;
+    @BindView(R.id.search_fab)
+    protected FloatingActionButton locatonSearchFab;
+
+    @BindView(R.id.tab_layout)
+    protected TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkLocationPermission();
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         init();
 
         ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor();
@@ -82,13 +90,12 @@ public class MainActivity extends AppCompatActivity  {
         //+ repeatInterval;
 
         if(alarmManager!=null) {
-                alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
         }
     }
 
     // TODO Typeface tf =Typeface.createFromAsset( getAssets("weather.ttf"));
     private void init(){
-        locatonSearchFab = findViewById(R.id.search_fab);
         locatonSearchFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,8 +103,6 @@ public class MainActivity extends AppCompatActivity  {
                 startActivity(intent);
             }
         });
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
         // Set the text for each tab.
         tabLayout.addTab(tabLayout.newTab().setText("Locations"));
         tabLayout.addTab(tabLayout.newTab().setText("Current Location"));
