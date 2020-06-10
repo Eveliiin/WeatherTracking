@@ -11,6 +11,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
+import com.example.weathertracking.Activities.MainActivity;
 import com.example.weathertracking.Adapters.WeatherDaysPagerAdapter;
 import com.example.weathertracking.Models.CurrentWeather;
 import com.example.weathertracking.Models.FavoriteLocationObject;
@@ -40,6 +43,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.luolc.emojirain.EmojiRainLayout;
+import com.example.weathertracking.WeatherApiCalls.Icons;
 
 
 import java.util.Objects;
@@ -58,6 +62,13 @@ import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeat
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.WeatherForecastCalls.getForecastByLatlng;
 
+class  a extends EmojiRainLayout{
+
+    public a(Context context) {
+        super(context);
+    }
+    
+}
 
 public class LocationDetailFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
@@ -84,9 +95,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     protected EmojiRainLayout emojiRainLayout;
     @BindView(R.id.scrollView)
     protected NestedScrollView scrollView;
+    @BindView(R.id.weather_days_pager)
+    protected ViewPager viewPager;
+
+    @BindView(R.id.tab_layout_weather_days)
+    protected TabLayout tabLayout;
+
     private boolean isHideToolbarView = false;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private String fragmentType;
     private LatLng latLng;
     private Context mContext;
@@ -95,7 +110,9 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private BroadcastReceiver forecastReceiver;
     private BroadcastReceiver locationBroadcastReceiver;
     private BroadcastReceiver currentWeatherReceiver;
+    private BroadcastReceiver animStartReceiver;
 
+    private IntentFilter animFilter;
     private IntentFilter networkActionFilter;
     private IntentFilter cfilter;
     private IntentFilter weatherOkFilter;
@@ -139,19 +156,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
-
-        emojiRainLayout.addEmoji(R.drawable.drop);
-        emojiRainLayout.addEmoji(R.drawable.drop);
-
-        emojiRainLayout.stopDropping();
-        emojiRainLayout.setPer(100);
-        emojiRainLayout.setDuration(7200);
-        emojiRainLayout.setDropDuration(2400);
-        emojiRainLayout.setDropFrequency(500);
-        emojiRainLayout.startDropping();
-
-
-
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             //hogy ne csusszon a toolbar hatahoz
             @Override
@@ -159,21 +163,49 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 scrollChanged();
             }
         });
-        tabLayout = view.findViewById(R.id.tab_layout_weather_days);
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
         tabLayout.addTab(tabLayout.newTab().setText("Tomorrow"));
         tabLayout.addTab(tabLayout.newTab().setText("5days"));
-
         // Set the tabs to fill the entire layout.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        viewPager = view.findViewById(R.id.weather_days_pager);
         initReceivers();
+        mContext.registerReceiver(animStartReceiver,animFilter);
         mContext.registerReceiver(networkActionReceiver, networkActionFilter);
         loadWeather();
         setRefreshAndFavorite();
         df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
         dt = (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
         return view;
+    }
+    private void startAnimation(String icon){
+        switch (icon) {
+            //rain
+            case Icons.w09d:
+            case Icons.w09n:
+            case Icons.w10d:
+            case Icons.w10n:
+                emojiRainLayout.addEmoji(R.drawable.drop);
+                break;
+            /*
+                //thunder
+            case Icons.w11d:
+            case Icons.w11n:
+                Glide.with(mContext).load(R.drawable.w11d).into(iconImageView);
+                break;
+            */
+            //snow
+            case Icons.w13d:
+            case Icons.w13n:
+                emojiRainLayout.addEmoji(R.drawable.snowflake_gray);
+                break;
+                default:
+                    return;
+        }
+        emojiRainLayout.stopDropping();
+        emojiRainLayout.setPer(1);
+        emojiRainLayout.setDropDuration(5000);
+        emojiRainLayout.setDropFrequency(500);
+        emojiRainLayout.startDropping();
     }
 
     private void scrollChanged(){
@@ -335,6 +367,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         }
     }
     private void setCurrentWeather() {
+        startAnimation(favoriteLocationObject.getIcon());
         appBarLayout.addOnOffsetChangedListener(this);
         floatHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp()+" °C", favoriteLocationObject.getIcon(), favoriteLocationObject.getWeather(), favoriteLocationObject.getCurrentWeatherObject().getLastrefreshDate());
         toolbarHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp()+" °C", favoriteLocationObject.getIcon());
@@ -394,8 +427,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     }
 
     private void getCurrentLocationAndForecast() {//TODO nev
-
-        loading = 0;
         LocalBroadcastManager.getInstance(mContext).registerReceiver(locationBroadcastReceiver, locationFilter);
         mContext.registerReceiver(forecastReceiver, weatherOkFilter);
         mContext.registerReceiver(currentWeatherReceiver, cfilter);
@@ -403,6 +434,25 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     }
 
     private void initReceivers(){
+
+        //fragment in foreground event
+        animFilter = new IntentFilter(getString(R.string.START_ANIMATION));
+        animStartReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(fragmentType.equals(CURRENT_LOCATION)){
+
+                    if(favoriteLocationObject==null|| favoriteLocationObject.getIcon()==null) {
+                        FavoriteLocationObject lastCurrent = getCurrentLocationFromSharedPref(mContext);
+                        startAnimation(lastCurrent.getIcon());
+                    }
+                    else {
+                        startAnimation(favoriteLocationObject.getIcon());
+                    }
+                }
+                //else wait until icon is set
+            }
+        };
 
         //current weather refreshReceiver
         cfilter = new IntentFilter("CURRENT_WEATHER");
@@ -556,7 +606,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     @Override
     public void onPause() {
         super.onPause();
-
         LocalBroadcastManager.getInstance(mContext).unregisterReceiver(locationBroadcastReceiver);
         try {
             mContext.unregisterReceiver(forecastReceiver);
@@ -564,14 +613,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             e.printStackTrace();
         }
         registerNeeded = true;
-
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         mContext.unregisterReceiver(networkActionReceiver);
     }
-    void hideRefresh(){
+    private void hideRefresh(){
         if (toolbarHeaderView.getRefreshIV() != null) {
             toolbarHeaderView.getRefreshIV().setVisibility(View.INVISIBLE);
         }

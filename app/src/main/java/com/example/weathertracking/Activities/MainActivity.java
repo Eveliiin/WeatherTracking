@@ -20,6 +20,7 @@ import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import com.example.weathertracking.Adapters.PagerAdapter;
+import com.example.weathertracking.Fragments.LocationDetailFragment;
 import com.example.weathertracking.Services.AlarmReceiver;
 import com.example.weathertracking.Services.LocationService;
 import com.example.weathertracking.R;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity  {
     @BindView(R.id.tab_layout)
     protected TabLayout tabLayout;
 
+    @BindView(R.id.pager)
+    protected  ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity  {
 
     public void startLocationService(){
         Intent intent = new Intent(MainActivity.this, LocationService.class);
-        intent.putExtra("Command","START");
+        intent.putExtra(getString(R.string.COMMAND),"START");
         startService(intent);
     }
     private void setRefresh(){
@@ -104,12 +108,13 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
         // Set the text for each tab.
-        tabLayout.addTab(tabLayout.newTab().setText("Locations"));
-        tabLayout.addTab(tabLayout.newTab().setText("Current Location"));
+
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.addTab(tabLayout.newTab());
+        tabLayout.setupWithViewPager(viewPager);
         // Set the tabs to fill the entire layout.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount()) {
         };
         viewPager.setAdapter(adapter);
@@ -117,6 +122,10 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                if(tab.getPosition()==1){
+                    Intent animationIntent = new Intent(getString(R.string.START_ANIMATION));
+                    sendBroadcast(animationIntent);
+                }
             }
 
             @Override
@@ -127,6 +136,8 @@ public class MainActivity extends AppCompatActivity  {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        tabLayout.getTabAt(0).setText("Locations");
+        tabLayout.getTabAt(1).setText("Current Location");
     }
 
     public class NotificationBroadcastReceiver extends BroadcastReceiver {
@@ -146,7 +157,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)

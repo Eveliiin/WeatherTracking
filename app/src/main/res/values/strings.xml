@@ -29,9 +29,10 @@
     <string name="CURRENT_WEATHER_SEARCH_A">CURRENT_WEATHER_SEARCH_A</string>
     <string name="SELECTED_LOCATION_OBJECT">SELECTED_LOCATION_OBJECT</string>
 
-    <string name="COMMAND">COMMAND</string>
+    <string name="COMMAND">Command</string>
     <string name="REFRESH_LOCATION">REFRESH_LOCATION</string>
     <string name="CURRENT_WEATHER_OBJECT">CURRENT_WEATHER_OBJECT</string>
     <string name="TYPE">TYPE</string>
+    <string name="START_ANIMATION">START_ANIMATION</string>
 
 </resources>

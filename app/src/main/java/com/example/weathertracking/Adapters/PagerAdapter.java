@@ -1,5 +1,8 @@
 package com.example.weathertracking.Adapters;
 
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -10,11 +13,11 @@ import com.example.weathertracking.Fragments.LocationDetailFragment;
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
-        super(fm);
-        this.mNumOfTabs = NumOfTabs;
-
+    protected PagerAdapter(@NonNull FragmentManager fm, int numOfTabs) {
+        super(fm, numOfTabs);
+        this.mNumOfTabs = numOfTabs;
     }
+
     @Override
     public Fragment getItem(int position) {
 
@@ -24,8 +27,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             default: return null;
         }
     }
-
-
     @Override
     public int getCount() {
         return mNumOfTabs;
