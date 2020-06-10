@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 
 import com.example.weathertracking.Adapters.PagerAdapter;
 import com.example.weathertracking.Fragments.LocationDetailFragment;
+import com.example.weathertracking.Network.ConnectionStateMonitor;
 import com.example.weathertracking.Services.AlarmReceiver;
 import com.example.weathertracking.Services.LocationService;
 import com.example.weathertracking.R;
@@ -54,6 +56,10 @@ public class MainActivity extends AppCompatActivity  {
     @BindView(R.id.pager)
     protected  ViewPager viewPager;
 
+    BroadcastReceiver networkActionReceiver;
+    IntentFilter networkActionFilter;
+    boolean isLost=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +68,7 @@ public class MainActivity extends AppCompatActivity  {
         ButterKnife.bind(this);
         init();
 
-        ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor();
+        ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor(this);
         connectionStateMonitor.enable(this);
         // TODO ? ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
@@ -138,6 +144,32 @@ public class MainActivity extends AppCompatActivity  {
         });
         tabLayout.getTabAt(0).setText("Locations");
         tabLayout.getTabAt(1).setText("Current Location");
+        initNetworkActionReceiver();
+    }
+    void initNetworkActionReceiver(){
+        //Network action refreshReceiver
+        networkActionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if("DISCONNECTED".equals(intent.getStringExtra("TYPE"))){
+
+                    locatonSearchFab.setClickable(true);
+                    locatonSearchFab.setBackgroundColor(Color.LTGRAY);
+                    if(isLost) {
+                        Toast.makeText(getApplicationContext(), "reconnected", Toast.LENGTH_LONG).show();
+                        isLost=false;
+                    }
+                }
+                else {
+                    if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
+                        isLost=true;
+                        locatonSearchFab.setClickable(false);
+                        locatonSearchFab.setBackgroundColor(Color.LTGRAY);
+                    }
+                }
+            }
+        };
+        networkActionFilter = new IntentFilter("NETWORK_ACTION");
     }
 
     public class NotificationBroadcastReceiver extends BroadcastReceiver {
@@ -196,48 +228,5 @@ public class MainActivity extends AppCompatActivity  {
             return true;
         }
         //TODO ne folytassa ha false vagy valami
-    }
-
-    public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback {
-
-        final NetworkRequest networkRequest;
-
-        ConnectionStateMonitor() {
-            networkRequest = new NetworkRequest.Builder()
-                    .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                    .build();
-        }
-
-        void enable(Context context) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (connectivityManager != null) {
-                connectivityManager.registerNetworkCallback(networkRequest, this);
-            }
-        }
-
-
-        // Likewise, you can have a disable method that simply calls ConnectivityManager.unregisterNetworkCallback(NetworkCallback) too.
-
-        @Override//ez
-        public void onAvailable(Network network) {
-            // Do what you need to do here
-            locatonSearchFab.setClickable(true);
-            locatonSearchFab.setBackgroundColor(Color.LTGRAY);
-            Intent noInternetIntent = new Intent("NETWORK_ACTION");
-            noInternetIntent.putExtra("TYPE","RECONNECTED");
-            sendBroadcast(noInternetIntent);
-        }
-
-        @Override//ez
-        public void onLost(@NonNull Network network) {
-            super.onLost(network);
-            Toast.makeText(getApplicationContext(), "no internet", Toast.LENGTH_LONG).show();
-            locatonSearchFab.setClickable(false);
-            locatonSearchFab.setBackgroundColor(Color.LTGRAY);
-            Intent noInternetIntent = new Intent("NETWORK_ACTION");
-            noInternetIntent.putExtra("TYPE","DISCONNECTED");
-            sendBroadcast(noInternetIntent);
-        }
     }
 }

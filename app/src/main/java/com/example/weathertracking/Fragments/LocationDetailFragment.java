@@ -447,12 +447,15 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             public void onReceive(Context context, Intent intent) {
                 if(fragmentType.equals(CURRENT_LOCATION)){
 
-                    if(favoriteLocationObject==null|| favoriteLocationObject.getIcon()==null) {
+
+                    if(favoriteLocationObject==null){
                         FavoriteLocationObject lastCurrent = getCurrentLocationFromSharedPref(mContext);
                         startAnimation(lastCurrent.getIcon());
                     }
                     else {
-                        startAnimation(favoriteLocationObject.getIcon());
+                        if(favoriteLocationObject.getIcon()!=null) {
+                            startAnimation(favoriteLocationObject.getIcon());
+                        }
                     }
                 }
                 //else wait until icon is set
