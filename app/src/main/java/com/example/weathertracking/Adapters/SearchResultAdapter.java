@@ -26,10 +26,14 @@ public  class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapt
     private final LayoutInflater mInflater;
     Context mContext;
 
-    public SearchResultAdapter(Context context, List<SearchCityObject> resultsList) {
+    public SearchResultAdapter(Context context) {
         mContext=context;
         this.mInflater = LayoutInflater.from(context);
 
+        this.mResultsList=new ArrayList<>();
+    }
+
+    public void setResults(List<SearchCityObject> resultsList){
         this.mResultsList=new ArrayList<>(resultsList);
     }
     public void deleteElements(){

@@ -56,7 +56,9 @@ import static com.example.weathertracking.Activities.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Utils.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.Utils.CurrentLocation.setLastCurrentLocation;
+import static com.example.weathertracking.Utils.Favorites.addFavorite;
 import static com.example.weathertracking.Utils.Favorites.checkIfIsFavorite;
+import static com.example.weathertracking.Utils.Favorites.deleteFavorite;
 import static com.example.weathertracking.Utils.Favorites.modifyFavorite;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.LOCATION_DETAIL_F;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
@@ -67,7 +69,6 @@ class  a extends EmojiRainLayout{
     public a(Context context) {
         super(context);
     }
-    
 }
 
 public class LocationDetailFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
@@ -357,13 +358,17 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             floatHeaderView.getFavoriteIB().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO ezt ne igy
-                    String loc = String.valueOf(favoriteLocationObject.getLocationName());
-                    if (!loc.equals("")) {
-                        modifyFavorite(favoriteLocationObject, mContext);
+                    if(checkIfIsFavorite(favoriteLocationObject,mContext)){
+                        deleteFavorite(favoriteLocationObject, mContext);
+                        floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    }
+                    else {
+                      addFavorite(favoriteLocationObject, mContext);
+                        floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
                     }
                 }
             });
+            setFavoriteButton();
         }
     }
     private void setCurrentWeather() {
@@ -547,13 +552,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private void setFavoriteButton(){
         if(checkIfIsFavorite(favoriteLocationObject,mContext)){
             if (floatHeaderView.getFavoriteIB() != null) {
-                floatHeaderView.getFavoriteIB().setBackgroundResource(R.drawable.ic_favorite_black_24dp);
+                floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
             }
         }
         else {
 
             if (floatHeaderView.getFavoriteIB() != null) {
-                floatHeaderView.getFavoriteIB().setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
+                floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
             }
         }
     }

@@ -108,7 +108,7 @@ public class LocationSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        adapter = new SearchResultAdapter(getBaseContext());
         setContentView(R.layout.activity_location_search);
         ButterKnife.bind(this);
         viewWeatherButton.setVisibility(View.INVISIBLE);
@@ -257,11 +257,10 @@ public class LocationSearchActivity extends AppCompatActivity {
 
         registerReceiver(currentWeatherReceiver, currentWeatherFilter);
         getCurrentWeatherByLatLng(getApplicationContext(), currentLocationObject.getLatLng(), LOCATION_SEARCH_A);
-
     }
 
     void clearRecyclerView() {
-        if(adapter!=null) {
+        if (adapter != null) {
             adapter.deleteElements();
             recyclerView.setAdapter(adapter);
         }
@@ -272,7 +271,6 @@ public class LocationSearchActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(itemClickedReceiver);//TODO nem jo ide
-
     }
 
     @Override
@@ -289,11 +287,6 @@ public class LocationSearchActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("LIST_ITEM_CLICKED");
         registerReceiver(itemClickedReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 
     public void searchLocation(String searchString) {//TODO rendes nevet a valtozonak
@@ -317,7 +310,7 @@ public class LocationSearchActivity extends AppCompatActivity {
                     results = new ArrayList<>(weatherForecastResult.list);
                     recyclerView.removeAllViews();
                     ////
-                    adapter = new SearchResultAdapter(getBaseContext(), results);
+                    adapter.setResults(results);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     recyclerView.setHasFixedSize(true);
@@ -459,6 +452,5 @@ public class LocationSearchActivity extends AppCompatActivity {
             }
         };
         intentFilterLocation = new IntentFilter(getString(R.string.CHOOSED_LOCATION));
-
     }
 }

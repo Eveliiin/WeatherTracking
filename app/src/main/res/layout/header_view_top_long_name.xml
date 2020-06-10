@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.weathertracking.proba.HeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/currentWeatherImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="25dp"
+            android:src="@drawable/w01d"
+            android:contentDescription="@string/iconDescription" /><!--Todo ? -->
+        <TextView
+            android:id="@+id/currentDegreeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/currentWeatherImageView"
+            android:layout_alignTop="@id/currentWeatherImageView"
+            android:layout_alignBottom="@id/currentWeatherImageView"
+            android:layout_marginStart="25dp"
+            android:text="70° C"
+            android:textSize="30sp"
+            android:gravity="center"
+            />
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/refreshImageView"
+            android:layout_toEndOf="@id/currentDegreeTV"
+            android:layout_alignBottom="@id/currentDegreeTV"
+            android:layout_alignTop="@id/currentDegreeTV"
+            android:src="@drawable/refreshing"
+
+            />
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_below="@id/currentDegreeTV"
+            android:gravity="center"
+            android:text="Susseennuii"
+            android:textSize="25sp" />
+    </RelativeLayout>
+
+</com.example.weathertracking.proba.HeaderView>
