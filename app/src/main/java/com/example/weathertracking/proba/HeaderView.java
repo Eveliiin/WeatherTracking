@@ -3,7 +3,6 @@ package com.example.weathertracking.proba;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +14,7 @@ import com.example.weathertracking.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Adapters.FavoriteListAdapter.changeIcon;
+import static com.example.weathertracking.adapters.FavoriteListAdapter.changeIcon;
 
 public class HeaderView extends CoordinatorLayout {
 

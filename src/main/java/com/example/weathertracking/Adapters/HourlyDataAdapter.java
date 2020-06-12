@@ -1,4 +1,4 @@
-package com.example.weathertracking.Adapters;
+package com.example.weathertracking.adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.weathertracking.Models.HourlyWeather;
+import com.example.weathertracking.models.HourlyWeather;
 import com.example.weathertracking.R;
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
 import com.example.weathertracking.WeatherApiCalls.Icons;
@@ -20,7 +20,7 @@ import com.example.weathertracking.WeatherApiCalls.Icons;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HourlyDataAdapter extends RecyclerView.Adapter<com.example.weathertracking.Adapters.HourlyDataAdapter.WeatherViewHolder> {
+public class HourlyDataAdapter extends RecyclerView.Adapter<com.example.weathertracking.adapters.HourlyDataAdapter.WeatherViewHolder> {
 
     private List<HourlyWeather> mWeathers= new ArrayList<>();
 
@@ -54,14 +54,14 @@ public class HourlyDataAdapter extends RecyclerView.Adapter<com.example.weathert
     @NonNull
     @Override
     // inflates the row layout from xml when needed
-    public com.example.weathertracking.Adapters.HourlyDataAdapter.WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public com.example.weathertracking.adapters.HourlyDataAdapter.WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = mInflater.inflate(R.layout.weather_item_hourly, parent, false);
-        return new com.example.weathertracking.Adapters.HourlyDataAdapter.WeatherViewHolder(view);
+        return new com.example.weathertracking.adapters.HourlyDataAdapter.WeatherViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull com.example.weathertracking.Adapters.HourlyDataAdapter.WeatherViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull com.example.weathertracking.adapters.HourlyDataAdapter.WeatherViewHolder holder, int position) {
         HourlyWeather w = mWeathers.get(position);
 
         String temperatureText=(Math.round(Float.parseFloat(w.getTemperature())) - 272) +"°C";

@@ -3,7 +3,7 @@ package com.example.weathertracking.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

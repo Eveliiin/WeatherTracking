@@ -1,4 +1,4 @@
-package com.example.weathertracking.Services;
+package com.example.weathertracking.sevicesAndReceiver;
 
 import android.Manifest;
 import android.app.IntentService;
@@ -20,7 +20,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.weathertracking.Activities.MainActivity;
+import com.example.weathertracking.main.MainActivity;
 
 public class LocationService extends IntentService
 {

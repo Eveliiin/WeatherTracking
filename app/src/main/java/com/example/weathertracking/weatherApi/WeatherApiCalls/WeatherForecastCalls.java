@@ -6,7 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.weathertracking.Utils.Forecast;
+import com.example.weathertracking.models.Forecast;
 import com.example.weathertracking.Utils.WeatherService;
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
 import com.example.weathertracking.weatherApi.WeatherForecastCallResult;

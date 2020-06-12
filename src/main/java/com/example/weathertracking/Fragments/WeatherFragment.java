@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.weathertracking.Adapters.HourlyDataAdapter;
+import com.example.weathertracking.adapters.HourlyDataAdapter;
 import com.example.weathertracking.R;
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
 

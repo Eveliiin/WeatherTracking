@@ -2,7 +2,6 @@ package com.example.weathertracking.Network;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -11,13 +10,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
+import java.io.IOException;
 
 public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback {
 
-    final NetworkRequest networkRequest;
+    private final NetworkRequest networkRequest;
+    private Context context;
 
-    Context context;
+
     public ConnectionStateMonitor(Context context) {
         this.context=context;
         networkRequest = new NetworkRequest.Builder()
@@ -55,5 +55,16 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
             noInternetIntent.putExtra("TYPE", "DISCONNECTED");
             context.sendBroadcast(noInternetIntent);
         }
+    }
+
+    public static boolean isConecctedToInternet() {
+
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e)          { e.printStackTrace(); }
+        return false;
     }
 }

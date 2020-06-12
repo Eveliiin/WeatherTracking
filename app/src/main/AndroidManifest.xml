@@ -58,16 +58,16 @@
 
 
         <activity
-            android:name=".Activities.MapsActivity"
+            android:name=".Search.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".Activities.LocationSearchActivity" />
+        <activity android:name=".Search.LocationSearchActivity" />
         <activity
-            android:name=".Activities.LocationDetailActivity"
+            android:name=".main.LocationDetailActivity"
             android:label="@string/title_activity_location_detail"
-            android:parentActivityName=".Activities.MainActivity"
+            android:parentActivityName=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -77,15 +77,15 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".Services.LocationService" />
+        <service android:name=".sevicesAndReceiver.LocationService" />
         <receiver
-            android:name=".Services.AlarmReceiver"
+            android:name=".sevicesAndReceiver.AlarmReceiver"
             android:enabled="true"
             android:exported="false"
             />
 
         <receiver
-            android:name=".Services.NetworkChangedReceiver"
+            android:name=".sevicesAndReceiver.NetworkChangedReceiver"
             android:enabled="true"
             android:exported="false"
             >

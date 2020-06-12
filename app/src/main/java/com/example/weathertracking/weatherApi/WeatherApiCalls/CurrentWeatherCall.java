@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import com.example.weathertracking.Models.CurrentWeather;
+import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.Utils.WeatherService;
 import com.example.weathertracking.weatherApi.CurrentWeatherCallResult;
 import com.google.android.gms.maps.model.LatLng;

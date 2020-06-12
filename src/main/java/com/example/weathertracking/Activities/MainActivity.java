@@ -1,4 +1,4 @@
-package com.example.weathertracking.Activities;
+package com.example.weathertracking.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +19,9 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
 
-import com.example.weathertracking.Adapters.PagerAdapter;
-import com.example.weathertracking.Services.AlarmReceiver;
-import com.example.weathertracking.Services.LocationService;
+import com.example.weathertracking.adapters.PagerAdapter;
+import com.example.weathertracking.sevicesAndReceiver.AlarmReceiver;
+import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -35,7 +35,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
-import static com.example.weathertracking.Services.LocationService.MY_PERMISSIONS_REQUEST_LOCATION;
+import static com.example.weathertracking.sevicesAndReceiver.LocationService.MY_PERMISSIONS_REQUEST_LOCATION;
 
 
 public class MainActivity extends AppCompatActivity  {
