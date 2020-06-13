@@ -17,7 +17,6 @@
             android:layout_height="70dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/w01d"
             android:contentDescription="@string/iconDescription" /><!--Todo ? -->
 
         <TextView
@@ -29,7 +28,6 @@
             android:layout_toStartOf="@id/refreshImageView"
             android:gravity="center"
             android:layout_marginStart="10dp"
-            android:text="Szép, napos idő"
             android:textSize="25dp"
             android:layout_below="@id/locationTextView"
             />
@@ -43,7 +41,7 @@
             android:layout_toEndOf="@id/currentDegreeTV"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="SUSSENNIddddddddddddddI"
+            android:text="Current location"
             android:textSize="30sp" />
 
         <ImageView
@@ -61,7 +59,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/currentWeatherImageView"
             android:layout_marginStart="10dp"
-            android:text="70° C"
             android:textSize="30sp"
             android:gravity="center"
             />
@@ -85,7 +82,6 @@
             android:layout_below="@id/refreshImageView"
             android:layout_alignParentEnd="true"
             android:layout_alignStart="@id/currentWeather"
-            android:text="Hétfő, 13:33"
             android:gravity="end"
             android:textSize="18dp"
             />

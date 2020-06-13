@@ -2,14 +2,17 @@ package com.example.weathertracking.Search;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -46,6 +49,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.checkIfIsFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.modifyFavorite;
@@ -104,7 +108,6 @@ public class LocationSearchActivity extends AppCompatActivity {
     private boolean isNetwork = true;
     private boolean currentLocationIsUsed = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,17 +149,22 @@ public class LocationSearchActivity extends AppCompatActivity {
         currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentLocationButton.setClickable(false);
-                locationEditText.setEnabled(false);
-                locationEditText.setText("");
-                currentLocationIsUsed = true;
-                Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotation_animation);
-                currentLocationButton.startAnimation(aniRotate);
-                hideFeatures();
-                Intent refreshLocationIntent = new Intent(LocationSearchActivity.this, LocationService.class);
-                refreshLocationIntent.putExtra(getString(R.string.COMMAND), getString(R.string.REFRESH_LOCATION));
-                startService(refreshLocationIntent);
-                LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(locationReceiver, intentFilter);
+                if(isLocationGranted) {
+                    currentLocationButton.setClickable(false);
+                    locationEditText.setEnabled(false);
+                    locationEditText.setText("");
+                    currentLocationIsUsed = true;
+                    Animation aniRotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotation_animation);
+                    currentLocationButton.startAnimation(aniRotate);
+                    hideFeatures();
+                    Intent refreshLocationIntent = new Intent(LocationSearchActivity.this, LocationService.class);
+                    refreshLocationIntent.putExtra(getString(R.string.COMMAND), getString(R.string.REFRESH_LOCATION));
+                    startService(refreshLocationIntent);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(locationReceiver, intentFilter);
+                }
+                else {
+                    Toast.makeText(LocationSearchActivity.this,"please enable location",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         viewWeatherButton.setOnClickListener(new View.OnClickListener() {
@@ -287,6 +295,14 @@ public class LocationSearchActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("LIST_ITEM_CLICKED");
         registerReceiver(itemClickedReceiver, intentFilter);
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            isLocationGranted=true;
+        }
+        else {
+            isLocationGranted=false;
+        }
     }
 
     public void searchLocation(String searchString) {//TODO rendes nevet a valtozonak

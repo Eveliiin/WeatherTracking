@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.weathertracking.adapters.WeatherDaysPagerAdapter;
@@ -106,12 +107,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private IntentFilter locationFilter;
     private FavoriteLocationObject favoriteLocationObject;
     private Boolean registerNeeded = false;
+    private View view;
 
     private int loading = 0;
 
     private boolean beenThereFromTop = false;
     private boolean beenThereFromBottom = false;
-
+    private int isIsLocationGrantedOnPause = -1;
 
     private AnimationDrawable df;
     private AnimationDrawable dt;
@@ -137,8 +139,23 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        final View view = inflater.inflate(R.layout.fragment_location_detail, container, false);
+        if (isConecctedToInternet()) {
+            if (getCurrentLocationFromSharedPref(mContext) == null && !isLocationGranted) {
+                view = inflater.inflate(R.layout.no_internet_fragment, container, false);
+                loadNoInternetPage("Please enable location");
+            } else {
+                view = inflater.inflate(R.layout.fragment_location_detail, container, false);
+                loadPage();
+            }
+        } else {
+            view = inflater.inflate(R.layout.no_internet_fragment, container, false);
+            loadNoInternetPage("No internet");
+        }
+        initReceivers();
+        return view;
+    }
 
+    private void loadPage() {
         ButterKnife.bind(this, view);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -156,15 +173,21 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         // Set the tabs to fill the entire layout.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         initReceivers();
-        mContext.registerReceiver(animStartReceiver,animFilter);
+        mContext.registerReceiver(animStartReceiver, animFilter);
         mContext.registerReceiver(networkActionReceiver, networkActionFilter);
         loadWeather();
         setRefreshAndFavorite();
         df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
         dt = (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
-        return view;
     }
-    private void startAnimation(String icon){
+
+    private void loadNoInternetPage(String error) {
+        TextView errorTextView = view.findViewById(R.id.error_message);
+        errorTextView.setText(error);
+
+    }
+
+    private void startAnimation(String icon) {
         switch (icon) {
             //rain
             case Icons.w09d:
@@ -185,8 +208,8 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             case Icons.w13n:
                 emojiRainLayout.addEmoji(R.drawable.snowflake_gray);
                 break;
-                default:
-                    return;
+            default:
+                return;
         }
         emojiRainLayout.stopDropping();
         emojiRainLayout.setPer(1);
@@ -195,7 +218,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         emojiRainLayout.startDropping();
     }
 
-    private void scrollChanged(){
+    private void scrollChanged() {
         final int y = 0;
         int scrollY = scrollView.getScrollY();
         if (scrollY > y) {
@@ -256,84 +279,87 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         emojiRainLayout.stopDropping();
         if (fragmentType.equals(CURRENT_LOCATION)) {
 
-            if(isLocationGranted) {
+            if (isLocationGranted) {
                 getCurrentLocationAndForecast();
                 Intent refreshLocationIntent = new Intent(getContext(), LocationService.class);
                 refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
                 mContext.startService(refreshLocationIntent);
-            }
-            else {
-                Toast.makeText(mContext,"please, enable location",Toast.LENGTH_SHORT);
+            } else {
+                Toast.makeText(mContext, "please, enable location", Toast.LENGTH_SHORT);
+                stopLoadingIcon();
+
             }
         } else {
             getForecast();
             getForecastByLatlng(getActivity(), favoriteLocationObject.getLatLng());
-            getCurrentWeatherByLatLng(mContext, favoriteLocationObject.getLatLng(),LOCATION_DETAIL_F);
+            getCurrentWeatherByLatLng(mContext, favoriteLocationObject.getLatLng(), LOCATION_DETAIL_F);
         }
     }
 
     private void loadWeather() {
 
-        if(fragmentType.equals(CURRENT_LOCATION)){
+        if (fragmentType.equals(CURRENT_LOCATION)) {
             setLastCurrentLocationFromSharedpref();
-            if(isLocationGranted) {
+            if (isLocationGranted) {
                 getCurrentLocationAndForecast();//First time, the main activity start the location service
-            }
-            else {
+            } else {
                 //Todo
             }
-        }
-        else {
-            if(favoriteLocationObject.getCurrentWeatherObject() ==null){
+        } else {
+            if (favoriteLocationObject.getCurrentWeatherObject() == null) {
                 getCurrentWeather();
-            }
-            else {
+            } else {
                 setCurrentWeather();//TODO utana nezni
             }
-            if(favoriteLocationObject.getForecastObject()==null){
+            if (favoriteLocationObject.getForecastObject() == null) {
                 getForecast();
-            }
-            else{
+            } else {
                 setForecast();
             }
         }
     }
-    private void setLastCurrentLocationFromSharedpref(){
+
+    private void setLastCurrentLocationFromSharedpref() {
 
         if (floatHeaderView.getRefreshIV() != null) {
-            df= (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
-                    df.start();
+            df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
+            df.start();
         }
 
         if (toolbarHeaderView.getRefreshIV() != null) {
-            dt= (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
+            dt = (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
             dt.start();
         }
-        FavoriteLocationObject lastCurrentLocation =getCurrentLocationFromSharedPref(mContext);
-        if(lastCurrentLocation!=null ){
-            favoriteLocationObject= new FavoriteLocationObject(lastCurrentLocation);
-            if(favoriteLocationObject.getCurrentWeatherObject()!=null){
+        FavoriteLocationObject lastCurrentLocation = getCurrentLocationFromSharedPref(mContext);
+        if (lastCurrentLocation != null) {
+            favoriteLocationObject = new FavoriteLocationObject(lastCurrentLocation);
+            if (favoriteLocationObject.getCurrentWeatherObject() != null) {
                 setCurrentWeather();
             }
-            if(lastCurrentLocation.getForecastObject()!=null){
+            if (lastCurrentLocation.getForecastObject() != null) {
                 setForecast();
             }
             setFavoriteButton();
         }
 
     }
+
     private void setRefreshAndFavorite() {
         if (floatHeaderView.getRefreshIV() != null) {
             floatHeaderView.getRefreshIV().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    df= (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
-                    df.start();
-                    if (toolbarHeaderView.getRefreshIV() != null) {
-                    dt= (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
-                    dt.start();
+                    if (isLocationGranted) {
+                        df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
+                        df.start();
+                        if (toolbarHeaderView.getRefreshIV() != null) {
+                            dt = (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
+                            dt.start();
+                        }
+                        refreshWeather();
+                    } else {
+                        Toast.makeText(mContext, "please enable location", Toast.LENGTH_SHORT).show();
                     }
-                    refreshWeather();
                 }
             });
         }
@@ -341,13 +367,17 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             toolbarHeaderView.getRefreshIV().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dt= (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
-                    dt.start();
-                    if (floatHeaderView.getRefreshIV() != null) {
-                        df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
-                        df.start();
+                    if (isLocationGranted) {
+                        dt = (AnimationDrawable) toolbarHeaderView.getRefreshIV().getBackground();
+                        dt.start();
+                        if (floatHeaderView.getRefreshIV() != null) {
+                            df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
+                            df.start();
+                        }
+                        refreshWeather();
+                    } else {
+                        Toast.makeText(mContext, "please enable location", Toast.LENGTH_SHORT).show();
                     }
-                    refreshWeather();
                 }
             });
         }
@@ -355,12 +385,11 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             floatHeaderView.getFavoriteIB().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(checkIfIsFavorite(favoriteLocationObject,mContext)){
+                    if (checkIfIsFavorite(favoriteLocationObject, mContext)) {
                         deleteFavorite(favoriteLocationObject, mContext);
                         floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    }
-                    else {
-                      addFavorite(favoriteLocationObject, mContext);
+                    } else {
+                        addFavorite(favoriteLocationObject, mContext);
                         floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
                     }
                 }
@@ -368,19 +397,22 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             setFavoriteButton();
         }
     }
+
     private void setCurrentWeather() {
         startAnimation(favoriteLocationObject.getIcon());
         appBarLayout.addOnOffsetChangedListener(this);
-        floatHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp()+" °C", favoriteLocationObject.getIcon(), favoriteLocationObject.getWeather(), favoriteLocationObject.getCurrentWeatherObject().getLastrefreshDate());
-        toolbarHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp()+" °C", favoriteLocationObject.getIcon());
+        floatHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon(), favoriteLocationObject.getWeather(), favoriteLocationObject.getCurrentWeatherObject().getLastrefreshDate());
+        toolbarHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon());
     }
-    private void getCurrentWeather(){
+
+    private void getCurrentWeather() {
         mContext.registerReceiver(currentWeatherReceiver, cfilter);
-        getCurrentWeatherByLatLng(mContext,favoriteLocationObject.getLatLng(),LOCATION_DETAIL_F);
+        getCurrentWeatherByLatLng(mContext, favoriteLocationObject.getLatLng(), LOCATION_DETAIL_F);
 
     }
+
     private void getForecast() {
-        getForecastByLatlng(getActivity(),favoriteLocationObject.getLatLng());
+        getForecastByLatlng(getActivity(), favoriteLocationObject.getLatLng());
         mContext.registerReceiver(forecastReceiver, weatherOkFilter);
     }
 
@@ -408,9 +440,8 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
-            Log.d("lOCATION_DETAIL_FRAGMENT","null forecast object");
+        } else {
+            Log.d("lOCATION_DETAIL_FRAGMENT", "null forecast object");
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -435,24 +466,21 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         loading = 0;
     }
 
-    private void initReceivers(){
+    private void initReceivers() {
 
         //fragment in foreground event
         animFilter = new IntentFilter(getString(R.string.START_ANIMATION));
         animStartReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(fragmentType.equals(CURRENT_LOCATION)){
-
-
-                    if(favoriteLocationObject==null){
+                if (fragmentType.equals(CURRENT_LOCATION)) {
+                    if (favoriteLocationObject == null) {
                         FavoriteLocationObject lastCurrent = getCurrentLocationFromSharedPref(mContext);
-                        if(lastCurrent!=null) {
+                        if (lastCurrent != null) {
                             startAnimation(lastCurrent.getIcon());
                         }
-                    }
-                    else {
-                        if(favoriteLocationObject.getIcon()!=null) {
+                    } else {
+                        if (favoriteLocationObject.getCurrentWeatherObject() != null) {
                             startAnimation(favoriteLocationObject.getIcon());
                         }
                     }
@@ -469,21 +497,23 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 String action = intent.getAction();
                 if ("CURRENT_WEATHER".equals(action)) {
 
-                    CurrentWeather currentWeather =(CurrentWeather) intent.getSerializableExtra("CURRENT_WEATHER_OBJECT");
-                    if(currentWeather!=null){
+                    CurrentWeather currentWeather = (CurrentWeather) intent.getSerializableExtra("CURRENT_WEATHER_OBJECT");
+                    if (currentWeather != null) {
                         favoriteLocationObject.setLocationName(currentWeather.getLocationName());//TODO ez igy fura
                         favoriteLocationObject.setCurrentWeather(currentWeather);
-                        updateFavorite(favoriteLocationObject,mContext);
+                        if (fragmentType.equals(CURRENT_LOCATION)) {
+                            setLastCurrentLocation(favoriteLocationObject, mContext);
+                        } else {
+                            updateFavorite(favoriteLocationObject, mContext);
+                        }
                         setCurrentWeather();
-                    }
-                    else {
-                        Log.e("location detail fragment","null weather object");
+                    } else {
+                        Log.e("location detail fragment", "null weather object");
                     }
 
                     try {
                         mContext.unregisterReceiver(currentWeatherReceiver);
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -502,28 +532,36 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 String action = intent.getAction();
                 if ("WEATHER_OK".equals(action)) {
 
-                    Forecast forecast=(Forecast) intent.getSerializableExtra("FORECAST_OBJECT");
+                    Forecast forecast = (Forecast) intent.getSerializableExtra("FORECAST_OBJECT");
                     favoriteLocationObject.setForecast(forecast);
                     setFavoriteButton();
                     setForecast();
-                    updateFavorite(favoriteLocationObject,mContext);
+                    if (fragmentType.equals(CURRENT_LOCATION)) {
+                        setLastCurrentLocation(favoriteLocationObject, mContext);
+                    } else {
+                        updateFavorite(favoriteLocationObject, mContext);
+                    }
                 }
                 stopLoadingIcon();
                 Log.d("Location**", " LocationDetailFragment weather refreshed");
-                mContext.unregisterReceiver(forecastReceiver);
+                try {
+                    mContext.unregisterReceiver(forecastReceiver);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
         };
 
         //current location refreshReceiver
-        locationFilter= new IntentFilter(LOCATION_KEY);
+        locationFilter = new IntentFilter(LOCATION_KEY);
         locationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Toast.makeText(mContext, "Current location refreshed!", Toast.LENGTH_SHORT).show();
                 latLng = new LatLng((double) intent.getExtras().get("Latitude"), (double) intent.getExtras().get("Longitude"));
-                getCurrentWeatherByLatLng(mContext, latLng,LOCATION_DETAIL_F);
-                getForecastByLatlng(mContext,latLng);
+                getCurrentWeatherByLatLng(mContext, latLng, LOCATION_DETAIL_F);
+                getForecastByLatlng(mContext, latLng);
                 favoriteLocationObject = new FavoriteLocationObject(latLng);
                 //LocalBroadcastManager.getInstance(view.getContext()).unregisterReceiver(locationBroadcastReceiver);
                 Log.d("Location*", " LocationDetailFragment current location received");
@@ -535,12 +573,11 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         networkActionReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if("DISCONNECTED".equals(intent.getStringExtra("TYPE"))){
+                if ("DISCONNECTED".equals(intent.getStringExtra("TYPE"))) {
 
                     hideRefresh();
-                }
-                else {
-                    if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
+                } else {
+                    if ("RECONNECTED".equals(intent.getStringExtra("TYPE"))) {
                         if (toolbarHeaderView.getRefreshIV() != null) {
                             toolbarHeaderView.getRefreshIV().setVisibility(View.VISIBLE);
                         }
@@ -553,73 +590,100 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         };
         networkActionFilter = new IntentFilter("NETWORK_ACTION");
     }
-    private void setFavoriteButton(){
-        if(checkIfIsFavorite(favoriteLocationObject,mContext)){
+
+    private void setFavoriteButton() {
+        if (checkIfIsFavorite(favoriteLocationObject, mContext)) {
             if (floatHeaderView.getFavoriteIB() != null) {
                 floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
             }
-        }
-        else {
+        } else {
 
             if (floatHeaderView.getFavoriteIB() != null) {
                 floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
             }
         }
     }
-    private void stopLoadingIcon(){//TODO rendes nevet nekije
+
+    private void stopLoadingIcon() {//TODO rendes nevet nekije
         loading++;
-        if (loading == 2){
-            setLastCurrentLocation(favoriteLocationObject,mContext);
-            if(df != null){
+        if (loading == 2) {
+            setLastCurrentLocation(favoriteLocationObject, mContext);
+            if (df != null) {
                 df.stop();
             }
-            if(dt!=null){
+            if (dt != null) {
                 dt.stop();
             }
-            loading=0;
+            loading = 0;
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
     }
+
     @Override
     public void onResume() {
         super.onResume();
         if (registerNeeded) {
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(locationBroadcastReceiver, locationFilter);
-            mContext.registerReceiver(forecastReceiver, weatherOkFilter);
-            registerNeeded = false;
+            if (isLocationGranted) {
+                LocalBroadcastManager.getInstance(mContext).registerReceiver(locationBroadcastReceiver, locationFilter);
+                mContext.registerReceiver(forecastReceiver, weatherOkFilter);
+                mContext.registerReceiver(networkActionReceiver, networkActionFilter);
+                registerNeeded = false;
+            }
         }
-        if(!isConecctedToInternet()){
-            Toast.makeText(mContext,"No internet",Toast.LENGTH_LONG).show();
+        if (!isConecctedToInternet()) {
+            Toast.makeText(mContext, "No internet", Toast.LENGTH_LONG).show();
             hideRefresh();
         }
+        if (isLocationGranted && isIsLocationGrantedOnPause == 0) {
+            isIsLocationGrantedOnPause = 1;
+            getActivity().recreate();
+        }
     }
+
     @Override
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(mContext).unregisterReceiver(locationBroadcastReceiver);
         try {
             mContext.unregisterReceiver(forecastReceiver);
+            mContext.unregisterReceiver(animStartReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
         registerNeeded = true;
-        mContext.unregisterReceiver(animStartReceiver);
+        if (isLocationGranted) {
+            isIsLocationGrantedOnPause = 1;
+        } else {
+            isIsLocationGrantedOnPause = 0;
+        }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mContext.unregisterReceiver(networkActionReceiver);
-    }
-    private void hideRefresh(){
-        if (toolbarHeaderView.getRefreshIV() != null) {
-            toolbarHeaderView.getRefreshIV().setVisibility(View.INVISIBLE);
+        try {
+            mContext.unregisterReceiver(networkActionReceiver);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (floatHeaderView.getRefreshIV() != null) {
-            floatHeaderView.getRefreshIV().setVisibility(View.INVISIBLE);
+    }
+
+    private void hideRefresh() {
+        if (toolbarHeaderView != null) {
+            if (toolbarHeaderView.getRefreshIV() != null) {
+                toolbarHeaderView.getRefreshIV().setVisibility(View.INVISIBLE);
+            }
+        }
+        if (floatHeaderView != null) {
+            if (floatHeaderView.getRefreshIV() != null) {
+                floatHeaderView.getRefreshIV().setVisibility(View.INVISIBLE);
+            }
         }
     }
 }

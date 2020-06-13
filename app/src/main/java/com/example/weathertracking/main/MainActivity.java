@@ -6,7 +6,9 @@ import android.Manifest;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,13 +59,22 @@ public class MainActivity extends AppCompatActivity  {
     boolean isConnectionLost =false;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            isLocationGranted=true;
+        }
+        else {isLocationGranted=false;}
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isLocationGranted=checkLocationPermission2();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-
+        isLocationGranted=checkLocationPermission2();
         ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor(this);
         connectionStateMonitor.enable(this);
         // TODO ? ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
@@ -79,6 +90,22 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
         setRefresh();
+        BroadcastReceiver broadcastReceiver= new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if ( action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE) ) {
+                    ComponentName thiswidget = new ComponentName(context,     MainActivity.class);
+                    AppWidgetManager am = AppWidgetManager.getInstance(context);
+                    int[] ids = am.getAppWidgetIds(thiswidget);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+
+                    // either handle the permission change at this point or in onUpdate()
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver,new IntentFilter(AppWidgetManager.ACTION_APPWIDGET_UPDATE));
+
     }
 
 
@@ -189,7 +216,7 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-    public boolean checkLocationPermission2() {
+    public  boolean checkLocationPermission2() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {

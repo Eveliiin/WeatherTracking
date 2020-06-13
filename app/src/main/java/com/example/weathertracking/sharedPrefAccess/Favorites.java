@@ -210,7 +210,7 @@ public class Favorites  {
             Log.e("favorites", "Empty favorites array");
             return false;
         }
-        if(locationToCheck==null){//TODO bibi
+        if(locationToCheck==null ||favorites==null){//TODO bibi
             return false;
         }
         return favorites.contains(locationToCheck);

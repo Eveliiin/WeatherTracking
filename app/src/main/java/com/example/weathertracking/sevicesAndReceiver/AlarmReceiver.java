@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import static com.example.weathertracking.main.MainActivity.isLocationGranted;
+
 public class AlarmReceiver extends BroadcastReceiver {
 
 
@@ -16,12 +18,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
     private void deliverNotification(Context context){
 
-        try {
-            Intent refreshLocationIntent = new Intent(context, LocationService.class);
-            refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
+        try {//TODO favorites refresh!!
+            if(isLocationGranted) {
+                Intent refreshLocationIntent = new Intent(context, LocationService.class);
+                refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
 
-            context.startService(refreshLocationIntent);
-            Log.d("Location**","refresh alarm");
+                context.startService(refreshLocationIntent);
+                Log.d("Location**", "refresh alarm");
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
