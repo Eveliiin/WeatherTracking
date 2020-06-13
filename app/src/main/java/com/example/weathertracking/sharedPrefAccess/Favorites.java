@@ -209,7 +209,9 @@ public class Favorites  {
         } catch (Exception e) {
             Log.e("favorites", "Empty favorites array");
             return false;
-
+        }
+        if(locationToCheck==null){//TODO bibi
+            return false;
         }
         return favorites.contains(locationToCheck);
     }

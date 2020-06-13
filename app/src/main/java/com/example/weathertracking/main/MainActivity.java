@@ -36,12 +36,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.weathertracking.Network.ConnectionStateMonitor.isConecctedToInternet;
-import static com.example.weathertracking.sevicesAndReceiver.LocationService.MY_PERMISSIONS_REQUEST_LOCATION;
 
 
 public class MainActivity extends AppCompatActivity  {
 
     public static final String LOCATION_KEY = "location";
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     @BindView(R.id.search_fab)
     protected FloatingActionButton locatonSearchFab;
 
@@ -53,26 +53,30 @@ public class MainActivity extends AppCompatActivity  {
 
     BroadcastReceiver networkActionReceiver;
     IntentFilter networkActionFilter;
-    boolean isLost=false;
+    public static boolean isLocationGranted =false;
+    boolean isConnectionLost =false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkLocationPermission();
+        isLocationGranted=checkLocationPermission2();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        init();
+
 
         ConnectionStateMonitor connectionStateMonitor = new ConnectionStateMonitor(this);
         connectionStateMonitor.enable(this);
         // TODO ? ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
+        init();
         if(!isConecctedToInternet()){
             Toast.makeText(this,"No internet",Toast.LENGTH_LONG).show();
             locatonSearchFab.setClickable(false);
         }
         else {
+            if(isLocationGranted){
             startLocationService();
+            }
         }
         setRefresh();
     }
@@ -150,14 +154,14 @@ public class MainActivity extends AppCompatActivity  {
 
                     locatonSearchFab.setClickable(true);
                     locatonSearchFab.setBackgroundColor(Color.LTGRAY);
-                    if(isLost) {
+                    if(isConnectionLost) {
                         Toast.makeText(getApplicationContext(), "reconnected", Toast.LENGTH_LONG).show();
-                        isLost=false;
+                        isConnectionLost =false;
                     }
                 }
                 else {
                     if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
-                        isLost=true;
+                        isConnectionLost =true;
                         locatonSearchFab.setClickable(false);
                         locatonSearchFab.setBackgroundColor(Color.LTGRAY);
                     }
@@ -184,21 +188,22 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-    public boolean checkLocationPermission() {
+
+    public boolean checkLocationPermission2() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
-                        .setTitle("Location permission request")
-                        .setMessage("Please enable location.")
+                        .setTitle("Location Permission")
+                        .setMessage("please enable location")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -222,6 +227,39 @@ public class MainActivity extends AppCompatActivity  {
         } else {
             return true;
         }
-        //TODO ne folytassa ha false vagy valami
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    isLocationGranted=true;
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        //locationManager.requestLocationUpdates(provider, 400, 1, this);
+                    }
+
+                } else {
+                    isLocationGranted=false;
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
+        }
+    }
+
 }

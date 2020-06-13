@@ -1,4 +1,4 @@
-package com.example.weathertracking.Utils;
+package com.example.weathertracking.weatherApi;
 
 import com.example.weathertracking.weatherApi.CurrentWeatherCallResult;
 import com.example.weathertracking.weatherApi.SearchCityCallResult;

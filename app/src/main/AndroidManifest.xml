@@ -84,16 +84,6 @@
             android:exported="false"
             />
 
-        <receiver
-            android:name=".sevicesAndReceiver.NetworkChangedReceiver"
-            android:enabled="true"
-            android:exported="false"
-            >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGED"/>
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>

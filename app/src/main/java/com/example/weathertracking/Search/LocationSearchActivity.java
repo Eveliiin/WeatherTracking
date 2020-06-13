@@ -30,7 +30,7 @@ import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
-import com.example.weathertracking.Utils.WeatherService;
+import com.example.weathertracking.weatherApi.WeatherService;
 import com.example.weathertracking.weatherApi.SearchCityObject;
 import com.example.weathertracking.weatherApi.SearchCityCallResult;
 import com.google.android.gms.maps.model.LatLng;

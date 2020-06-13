@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
-import com.example.weathertracking.Utils.WeatherService;
+import com.example.weathertracking.weatherApi.WeatherService;
 import com.example.weathertracking.weatherApi.SearchCityCallResult;
 import com.example.weathertracking.weatherApi.SearchCityObject;
 

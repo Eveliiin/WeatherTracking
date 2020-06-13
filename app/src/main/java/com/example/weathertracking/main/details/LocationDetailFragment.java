@@ -42,15 +42,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.luolc.emojirain.EmojiRainLayout;
 import com.example.weathertracking.Utils.Icons;
 
-
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.android.volley.VolleyLog.TAG;
 import static com.example.weathertracking.Network.ConnectionStateMonitor.isConecctedToInternet;
 import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;
@@ -65,7 +62,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
     public static final String FAVORITE_LOCATION_OBJECT = "FAVORITE_LOCATION_OBJECT";
     private static final String CURRENT_LOCATION = "CURRENT_LOCATION";
-    private static final int REQ_PERMISSION=0;
 
     @BindView(R.id.toolbar_header_view)
     protected HeaderView toolbarHeaderView;
@@ -259,10 +255,16 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private void refreshWeather() {
         emojiRainLayout.stopDropping();
         if (fragmentType.equals(CURRENT_LOCATION)) {
-            getCurrentLocationAndForecast();
-            Intent refreshLocationIntent = new Intent(getContext(), LocationService.class);
-            refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
-            mContext.startService(refreshLocationIntent);
+
+            if(isLocationGranted) {
+                getCurrentLocationAndForecast();
+                Intent refreshLocationIntent = new Intent(getContext(), LocationService.class);
+                refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
+                mContext.startService(refreshLocationIntent);
+            }
+            else {
+                Toast.makeText(mContext,"please, enable location",Toast.LENGTH_SHORT);
+            }
         } else {
             getForecast();
             getForecastByLatlng(getActivity(), favoriteLocationObject.getLatLng());
@@ -273,9 +275,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private void loadWeather() {
 
         if(fragmentType.equals(CURRENT_LOCATION)){
-            permissionRequest();
             setLastCurrentLocationFromSharedpref();
-            getCurrentLocationAndForecast();//First time, the main activity start the location service
+            if(isLocationGranted) {
+                getCurrentLocationAndForecast();//First time, the main activity start the location service
+            }
+            else {
+                //Todo
+            }
         }
         else {
             if(favoriteLocationObject.getCurrentWeatherObject() ==null){
@@ -441,7 +447,9 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
                     if(favoriteLocationObject==null){
                         FavoriteLocationObject lastCurrent = getCurrentLocationFromSharedPref(mContext);
-                        startAnimation(lastCurrent.getIcon());
+                        if(lastCurrent!=null) {
+                            startAnimation(lastCurrent.getIcon());
+                        }
                     }
                     else {
                         if(favoriteLocationObject.getIcon()!=null) {
@@ -569,21 +577,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 dt.stop();
             }
             loading=0;
-        }
-    }
-    private void permissionRequest(){
-        int req = ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()), Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (req != PackageManager.PERMISSION_GRANTED/*=0*/){
-            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE/*ide manifest.permission.R_E_S kellene */},REQ_PERMISSION);
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            Log.d (TAG,"permission ok");
-        }else {
-            Log.d(TAG,"permission filed");
         }
     }
     @Override
