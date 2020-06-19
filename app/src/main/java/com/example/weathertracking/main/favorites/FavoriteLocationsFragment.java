@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConecctedToInternet;
+import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.getFavoriteLocationsFromSharedPref;
 
 
@@ -191,7 +191,7 @@ public class FavoriteLocationsFragment extends Fragment {
         if(refreshRequired){
             uploadFavorites();
         }
-        if(!isConecctedToInternet()){
+        if(!isConnectedToInternet()){
             Toast.makeText(view.getContext(),"No internet",Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setEnabled(false);
         }

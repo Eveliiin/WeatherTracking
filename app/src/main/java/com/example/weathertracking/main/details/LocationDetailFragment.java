@@ -1,23 +1,19 @@
 package com.example.weathertracking.main.details;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
@@ -43,10 +39,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.luolc.emojirain.EmojiRainLayout;
 import com.example.weathertracking.Utils.Icons;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConecctedToInternet;
+import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
@@ -139,7 +137,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        if (isConecctedToInternet()) {
+        if (isConnectedToInternet()) {
             if (getCurrentLocationFromSharedPref(mContext) == null && !isLocationGranted) {
                 view = inflater.inflate(R.layout.no_internet_fragment, container, false);
                 loadNoInternetPage("Please enable location");
@@ -148,8 +146,10 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 loadPage();
             }
         } else {
-            view = inflater.inflate(R.layout.no_internet_fragment, container, false);
-            loadNoInternetPage("No internet");
+            if(getCurrentLocationFromSharedPref(mContext) == null) {
+                view = inflater.inflate(R.layout.no_internet_fragment, container, false);
+                loadNoInternetPage("No internet");
+            }
         }
         initReceivers();
         return view;
@@ -184,7 +184,19 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     private void loadNoInternetPage(String error) {
         TextView errorTextView = view.findViewById(R.id.error_message);
         errorTextView.setText(error);
+        errorTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+               /* Fragment frg = null;
+                frg = getFragmentManager().findFragmentByTag("Your_Fragment_TAG");
+                final FragmentTransaction ft = getTargetFragment().bei;
+                        getSupportFragmentManager().beginTransaction();
+                ft.detach(frg);
+                ft.attach(frg);
+                ft.commit();*/
+            }
+        });
     }
 
     private void startAnimation(String icon) {
@@ -254,7 +266,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         if (scrollY > y && beenThereFromBottom) {
             beenThereFromBottom = false;
         }
-    }
+    }//todo kell e mind
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -619,7 +631,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
     }
@@ -635,10 +647,11 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 registerNeeded = false;
             }
         }
-        if (!isConecctedToInternet()) {
+        if (!isConnectedToInternet()) {
             Toast.makeText(mContext, "No internet", Toast.LENGTH_LONG).show();
             hideRefresh();
         }
+
         if (isLocationGranted && isIsLocationGrantedOnPause == 0) {
             isIsLocationGrantedOnPause = 1;
             getActivity().recreate();

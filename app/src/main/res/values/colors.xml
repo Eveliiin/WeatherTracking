@@ -8,4 +8,9 @@
     <color name="colorSilver">#A2A2A1FF </color>
     <color name="colorTurkishSea">#195190FF </color>
 
+    <!-- colours for weather conditons-->
+    <color name="stormTopColor">#4066a4 </color>
+    <color name="stormBottomColor">#4066a4 </color>
+
+
 </resources>

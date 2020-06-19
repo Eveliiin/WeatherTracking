@@ -47,7 +47,7 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
 
     @Override//ez
     public void onLost(@NonNull Network network) {
-        if(!isConecctedToInternet()) {
+        if(!isConnectedToInternet()) {
             super.onLost(network);
             Toast.makeText(context, "no internet", Toast.LENGTH_LONG).show();
 
@@ -57,7 +57,7 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
         }
     }
 
-    public static boolean isConecctedToInternet() {
+    public static boolean isConnectedToInternet() {
 
         Runtime runtime = Runtime.getRuntime();
         try {

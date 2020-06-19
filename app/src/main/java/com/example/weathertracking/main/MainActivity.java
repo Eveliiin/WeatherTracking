@@ -37,7 +37,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConecctedToInternet;
+import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity  {
         // TODO ? ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
         init();
-        if(!isConecctedToInternet()){
+        if(!isConnectedToInternet()){
             Toast.makeText(this,"No internet",Toast.LENGTH_LONG).show();
             locatonSearchFab.setClickable(false);
         }
@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity  {
         tabLayout.getTabAt(0).setText("Locations");
         tabLayout.getTabAt(1).setText("Current Location");
         initNetworkActionReceiver();
+        registerReceiver(networkActionReceiver,networkActionFilter);
     }
     void initNetworkActionReceiver(){
         //Network action refreshReceiver
@@ -259,34 +260,25 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                isLocationGranted = true;
+                // permission was granted, yay! Do the
+                // location-related task you need to do.
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
 
-                    isLocationGranted=true;
-                    // permission was granted, yay! Do the
-                    // location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-
-                        //Request location updates:
-                        //locationManager.requestLocationUpdates(provider, 400, 1, this);
-                    }
-
-                } else {
-                    isLocationGranted=false;
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
+                    startLocationService();
+                    //Request location updates:
+                    //locationManager.requestLocationUpdates(provider, 400, 1, this);
                 }
-                return;
+            } else {
+                isLocationGranted = false;
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
             }
-
         }
     }
-
 }

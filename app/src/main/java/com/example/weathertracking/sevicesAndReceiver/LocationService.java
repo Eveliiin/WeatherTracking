@@ -33,7 +33,8 @@ public class LocationService extends IntentService
     public MyLocationListener listener=null;
     public Location previousBestLocation = null;
     Intent intent;
-    Boolean isRefreshRequested= false;
+    boolean isRefreshRequested= false;
+    boolean isProviderEnabled=true;
 
     public LocationService() {
         super("name");
