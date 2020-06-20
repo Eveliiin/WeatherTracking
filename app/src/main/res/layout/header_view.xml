@@ -29,6 +29,7 @@
             android:gravity="center"
             android:layout_marginStart="10dp"
             android:textSize="25dp"
+            android:text="thunderstorm with heavy rain"
             android:layout_below="@id/locationTextView"
             />
         <TextView
@@ -49,7 +50,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/favorite"
+            android:layout_alignBottom="@id/currentWeather"
             android:background="@drawable/refreshing"
 
             />
@@ -73,6 +74,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@id/locationTextView"
             android:layout_alignBottom="@id/locationTextView"
+            android:src="@drawable/ic_favorite_black_24dp"
             android:gravity="center" />
         <TextView
             android:id="@+id/lastRefreshDateTextView"
@@ -84,6 +86,7 @@
             android:layout_alignStart="@id/currentWeather"
             android:gravity="end"
             android:textSize="18dp"
+            android:text="lkjhgfdsdghjklkjhgcvbnmkjhg"
             />
     </RelativeLayout>
 </com.example.weathertracking.proba.HeaderView>

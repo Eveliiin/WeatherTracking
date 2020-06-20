@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.weathertracking.adapters.WeatherDaysPagerAdapter;
 import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
@@ -230,6 +231,15 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         emojiRainLayout.startDropping();
     }
 
+    private void setBackground(int weatherId) {
+
+        switch (weatherId)
+        {
+
+        }
+
+    }
+
     private void scrollChanged() {
         final int y = 0;
         int scrollY = scrollView.getScrollY();
@@ -415,6 +425,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         appBarLayout.addOnOffsetChangedListener(this);
         floatHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon(), favoriteLocationObject.getWeather(), favoriteLocationObject.getCurrentWeatherObject().getLastrefreshDate());
         toolbarHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon());
+        setBackground(favoriteLocationObject.getCurrentWeatherObject().getWeatherId());
     }
 
     private void getCurrentWeather() {

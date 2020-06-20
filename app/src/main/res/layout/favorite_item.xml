@@ -33,19 +33,19 @@
             android:gravity="center"
             >
             <TextView
-                android:id="@+id/dataTextView"
+                android:id="@+id/locationTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="weather data"
+                tools:text="Location"
                 android:textSize="28sp"
                 android:layout_marginBottom="10dp"
                 />
             <TextView
-                android:id="@+id/locationTextView"
+                android:id="@+id/dataTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
-                android:text="Location"
+                android:text="weather data"
                 />
         </LinearLayout>
         <LinearLayout

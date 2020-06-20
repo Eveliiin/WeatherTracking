@@ -34,10 +34,16 @@ public class HourlyDataAdapter extends RecyclerView.Adapter<com.example.weathert
         if(weathers !=null){
             for(int i=0;i<weathers.size();i++){
                 WeatherForecastObject w = weathers.get(i);
-                HourlyWeather hourlyWeatherNew = new HourlyWeather(w.dt_txt,String.valueOf(w.main.temp),
-                        String.valueOf(w.main.feels_like),w.weather.get(0).icon,w.weather.get(0).description,
-                        String.valueOf(w.wind.speed),String.valueOf(w.main.humidity),
-                        String.valueOf(w.main.pressure));
+                HourlyWeather hourlyWeatherNew =
+                        new HourlyWeather(
+                                w.dt_txt,String.valueOf(w.main.temp),
+                                String.valueOf(w.main.feels_like),
+                                w.weather.get(0).icon,
+                                w.weather.get(0).description,
+                                String.valueOf(w.wind.speed),
+                                String.valueOf(w.main.humidity),
+                                String.valueOf(w.main.pressure)
+                        );
                 mWeathers.add(hourlyWeatherNew);
             }
         }

@@ -26,6 +26,4 @@ public class WeatherForecastObject implements Serializable {
     //public Sys sys ;
     @SerializedName("dt_txt")
     public String dt_txt;
-
-
 }

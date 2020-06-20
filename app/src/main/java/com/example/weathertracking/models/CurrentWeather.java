@@ -24,6 +24,11 @@ public class CurrentWeather implements Serializable {
     @Expose
     private String weather="no data";
 
+    @SerializedName("weatherId")
+    @Expose
+    private int weatherId;
+
+
     @SerializedName("icon")
     @Expose
     private String icon;
@@ -49,9 +54,10 @@ public class CurrentWeather implements Serializable {
     private String lastrefreshDate="hello";
 
 
-    public CurrentWeather(Integer position,String weather, String icon, String minTemp, String maxTemp, String currentTemp, String locationName) {
+    public CurrentWeather(Integer position,String weather, String icon, String minTemp, String maxTemp, String currentTemp, String locationName,int weatherId) {
         this.position=position;
         this.weather = weather;
+        this.weatherId=weatherId;
         this.icon = icon;
         this.minTemp = minTemp;
         this.maxTemp = maxTemp;
@@ -66,6 +72,9 @@ public class CurrentWeather implements Serializable {
         this.lastrefreshDate ="refreshed on "+day+". "+ month+" "+hour+":"+minute;
     }
 
+    public int getWeatherId() {
+        return weatherId;
+    }
     public String getWeather() {
         return weather;
     }

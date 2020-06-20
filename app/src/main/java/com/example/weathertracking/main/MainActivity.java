@@ -105,9 +105,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         };
         registerReceiver(broadcastReceiver,new IntentFilter(AppWidgetManager.ACTION_APPWIDGET_UPDATE));
-
     }
-
 
     public void startLocationService(){
         Intent intent = new Intent(MainActivity.this, LocationService.class);

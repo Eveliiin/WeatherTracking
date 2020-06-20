@@ -16,9 +16,9 @@ public class HourlyWeather {
         this.feelsLike = feelsLike;
         this.icon = icon;
         this.weatherData = weatherData;
-        this.wind = wind;
-        this.humidity = humidity;
-        this.pressure = pressure;
+        this.wind = wind+"m/s";
+        this.humidity = humidity+"%";
+        this.pressure = pressure+"mb";
     }
 
     public String getData() {

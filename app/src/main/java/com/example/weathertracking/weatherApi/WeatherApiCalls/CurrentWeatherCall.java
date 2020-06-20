@@ -67,7 +67,8 @@ public class CurrentWeatherCall {
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp_max - 273)),
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp_min - 273)),
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp - 273)),
-                                        currentWeatherCallResult.name);
+                                        currentWeatherCallResult.name,
+                                        currentWeatherCallResult.id);
                         Intent i;
                         switch (position) {
                             case -2:
