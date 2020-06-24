@@ -1,9 +1,9 @@
 package com.example.weathertracking.weatherApi.weatherEffects;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import com.example.weathertracking.R;
-import com.example.weathertracking.weatherApi.weather.Weather;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,9 +27,13 @@ public class WeathersFromJson {
     private  Context context;
     private static Map<String, WeatherColours> map;
 
-    private WeathersFromJson(Context context) {
+    public WeathersFromJson(Context context) {
         this.context=context;
-        getWeatherConditions(context);
+        try {
+            readJsonStream(context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -39,54 +43,46 @@ public class WeathersFromJson {
         }
         return(INSTANCE);
     }
-    public static String getStartHex( String code){
-        String startHex= "#ffffff";
-        map.clear();
+    public  int getStartHex( String code){
+        int startHex= 0xffffffff;
         if(map!=null && map.get(code)!=null){
-            if(null != map.get(code).startHex){
-                startHex =map.get(code).startHex;
+            if(null!= map.get(code).startHex){
+                startHex = Color.parseColor(map.get(code).startHex);
             }
         }
         return startHex;
 
     }
-    public static String getendHex( String code){
-        String endHex= "#286e84";
-        map.clear();
+    public  int getendHex( String code){
+        int endHex= 0xff286e84;
         if(map!=null && map.get(code)!=null){
-            if(null != map.get(code).endHex){
-                endHex =map.get(code).endHex;
+            if(null!= map.get(code).endHex){
+                endHex =Color.parseColor(map.get(code).endHex);
             }
         }
         return endHex;
 
     }
-    public static String getStartHex(String code,String icon){
-        String startHex= "#ffffff";
-        code= code+ icon.substring(icon.length() - 1);
-        map.clear();
+    public int getSnow(String code){
+        int snow= 0;
         if(map!=null && map.get(code)!=null){
-            if(null != map.get(code).startHex){
-                startHex =map.get(code).startHex;
+            if(null!= map.get(code).endHex){
+                snow =map.get(code).snow;
             }
         }
-        return startHex;
-
+        return snow;
     }
-    public static String getEndHex(String code,String icon){
-        String endHex= "#286e84";
-        code= code+ icon.substring(icon.length() - 1);
-        map.clear();
+    public int getRain(String code){
+        int rain= 0;
         if(map!=null && map.get(code)!=null){
-            if(null != map.get(code).endHex){
-                endHex =map.get(code).endHex;
+            if(null!= map.get(code).endHex){
+                rain =map.get(code).rain;
             }
         }
-        return endHex;
-
+        return rain;
     }
 
-    public static void readJsonStream(Context context) throws IOException {
+    private static void readJsonStream(Context context) throws IOException {
 
 
         String jsonString=getJsonString(context);
@@ -96,10 +92,6 @@ public class WeathersFromJson {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         JsonNode jsonNode = mapper.readTree(jsonString);
 
-
-        /*for(int i=0; i<=jsonNode.size();i++){
-
-        }*/
         List<WeatherColours> myPojoList = mapper.readerFor(new TypeReference<List<WeatherColours>>(){}).readValue(jsonNode);
 
 
@@ -131,13 +123,4 @@ public class WeathersFromJson {
        String jsonString = writer.toString();
        return jsonString;
    }
-
-    public static void getWeatherConditions(Context context) {
-        try {
-            readJsonStream(context);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

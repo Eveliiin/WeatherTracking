@@ -1,4 +1,4 @@
-package com.example.weathertracking.main.details;
+package com.example.weathertracking.screen.main.main.details;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +19,7 @@ import com.example.weathertracking.R;
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
 
 
-import org.json.JSONObject;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

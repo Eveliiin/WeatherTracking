@@ -1,4 +1,4 @@
-package com.example.weathertracking.main;
+package com.example.weathertracking.screen.main.main;
 
 
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.util.Log;
 
 
 import com.example.weathertracking.models.FavoriteLocationObject;
-import com.example.weathertracking.main.details.LocationDetailFragment;
+import com.example.weathertracking.screen.main.main.details.LocationDetailFragment;
 import com.example.weathertracking.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.example.weathertracking.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
+import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 
 public class LocationDetailActivity extends AppCompatActivity {
 

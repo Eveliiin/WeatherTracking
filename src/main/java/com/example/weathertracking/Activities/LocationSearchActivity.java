@@ -1,4 +1,4 @@
-package com.example.weathertracking.main;
+package com.example.weathertracking.screen.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,7 +46,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.screen.main.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.Fragments.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 import static com.example.weathertracking.Utils.Favorites.checkIfIsFavorite;
 import static com.example.weathertracking.Utils.Favorites.modifyFavorite;

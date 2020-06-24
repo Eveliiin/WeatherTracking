@@ -58,16 +58,16 @@
 
 
         <activity
-            android:name=".Search.MapsActivity"
+            android:name=".screen.main.Search.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
-        <activity android:name=".Search.LocationSearchActivity" />
+        <activity android:name=".screen.main.Search.LocationSearchActivity" />
         <activity
-            android:name=".main.LocationDetailActivity"
+            android:name=".screen.main.main.LocationDetailActivity"
             android:label="@string/title_activity_location_detail"
-            android:parentActivityName=".main.MainActivity"
+            android:parentActivityName=".screen.main.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".main.MainActivity"
+            android:name=".screen.main.main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

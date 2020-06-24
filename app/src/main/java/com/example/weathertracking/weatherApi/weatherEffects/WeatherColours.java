@@ -47,4 +47,5 @@ public class WeatherColours {
         this.rain = rain;
         this.snow = snow;
     }
+
 }

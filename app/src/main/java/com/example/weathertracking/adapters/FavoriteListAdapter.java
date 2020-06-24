@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.weathertracking.main.LocationDetailActivity;
+import com.example.weathertracking.screen.main.main.LocationDetailActivity;
 import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import static com.example.weathertracking.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
+import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
 
 public  class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapter.WeatherViewHolder> implements Filterable {

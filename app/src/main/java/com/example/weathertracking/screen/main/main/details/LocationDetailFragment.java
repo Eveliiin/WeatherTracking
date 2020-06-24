@@ -1,10 +1,11 @@
-package com.example.weathertracking.main.details;
+package com.example.weathertracking.screen.main.main.details;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import com.example.weathertracking.R;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.models.Forecast;
 import com.example.weathertracking.proba.HeaderView;
+import com.example.weathertracking.weatherApi.weatherEffects.WeathersFromJson;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -41,8 +43,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
-import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
-import static com.example.weathertracking.main.MainActivity.isLocationGranted;
+import static com.example.weathertracking.screen.main.main.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;
@@ -52,8 +54,7 @@ import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavor
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.LOCATION_DETAIL_F;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.WeatherForecastCalls.getForecastByLatlng;
-import static com.example.weathertracking.weatherApi.weatherEffects.WeathersFromJson.getWeatherConditions;
-import static com.example.weathertracking.weatherApi.weatherIdCheck.checkId;
+import static com.example.weathertracking.weatherApi.weatherEffects.WeathersFromJson.getweathers;
 
 public class LocationDetailFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
@@ -135,7 +136,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        getWeatherConditions(mContext);
+        //getweathers(mContext);
         if (isConnectedToInternet()) {
             if (getCurrentLocationFromSharedPref(mContext) == null && !isLocationGranted) {
                 view = inflater.inflate(R.layout.no_internet_fragment, container, false);
@@ -198,48 +199,45 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         });
     }
 
-    private void startAnimation(String icon) {//TODO ide is a weatherIdCheck
-
-        emojiRainLayout.addEmoji(R.drawable.drop);
-        emojiRainLayout.stopDropping();
-        emojiRainLayout.setPer(1);//ezt modositani
-        emojiRainLayout.setDropDuration(5000);
-        emojiRainLayout.setDropFrequency(500);
-        emojiRainLayout.startDropping();
-        /*switch (icon) {
-            //rain
-            case Icons.w09d:
-            case Icons.w09n:
-            case Icons.w10d:
-            case Icons.w10n:
-                emojiRainLayout.addEmoji(R.drawable.drop);
-                break;
-            /*
-                //thunder
-            case Icons.w11d:
-            case Icons.w11n:
-                Glide.with(mContext).load(R.drawable.w11d).into(iconImageView);
-                break;
-
-            //snow
-            case Icons.w13d:
-            case Icons.w13n:
-                emojiRainLayout.addEmoji(R.drawable.snowflake_gray);
-                break;
-            default:
-                return;
+    private void startAnimation(int code,String icon) {//TODO ide is a weatherIdCheck
+        String codeString;
+        if(code<800){
+            codeString=String.valueOf(code);
         }
+        else {
+            codeString= (code)+icon.substring(icon.length() - 1);
+        }
+        WeathersFromJson weathersFromJson = getweathers(mContext);
+        setColor(weathersFromJson.getStartHex(codeString),weathersFromJson.getendHex(codeString));
+        int rain =weathersFromJson.getRain(codeString);
         emojiRainLayout.stopDropping();
-        emojiRainLayout.setPer(1);
-        emojiRainLayout.setDropDuration(5000);
-        emojiRainLayout.setDropFrequency(500);
-        emojiRainLayout.startDropping();*/
+        if(rain>0){
+            emojiRainLayout.addEmoji(R.drawable.drop);
+            emojiRainLayout.setPer(rain);//ezt modositani
+            emojiRainLayout.setDropDuration(5000);
+            emojiRainLayout.setDropFrequency(500);
+            emojiRainLayout.startDropping();
+        }
+        int snow =weathersFromJson.getSnow(codeString);
+        if(snow>0){
+            emojiRainLayout.addEmoji(R.drawable.snowflake_gray);
+            emojiRainLayout.setPer(snow);//ezt modositani
+            emojiRainLayout.setDropDuration(5000);
+            emojiRainLayout.setDropFrequency(500);
+            emojiRainLayout.startDropping();
+        }
+
     }
 
-    private void setBackground(int weatherId) {
 
-        switch (checkId(weatherId))
-        { }
+    private void setColor(int startHex, int endHex) {
+
+        int[] colors = {startHex, endHex};
+
+        GradientDrawable gradientDrawable = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM, colors);
+
+        view.setBackground(gradientDrawable);
 
     }
 
@@ -424,11 +422,10 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     }
 
     private void setCurrentWeather() {
-        startAnimation(favoriteLocationObject.getIcon());
+        startAnimation(favoriteLocationObject.getCurrentWeatherObject().getWeatherId(),favoriteLocationObject.getIcon());
         appBarLayout.addOnOffsetChangedListener(this);
         floatHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon(), favoriteLocationObject.getWeather(), favoriteLocationObject.getCurrentWeatherObject().getLastrefreshDate());
         toolbarHeaderView.bindTo(favoriteLocationObject.getLocationName(), favoriteLocationObject.getCurrentTemp() + " °C", favoriteLocationObject.getIcon());
-        setBackground(favoriteLocationObject.getCurrentWeatherObject().getWeatherId());
     }
 
     private void getCurrentWeather() {
@@ -503,11 +500,11 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                     if (favoriteLocationObject == null) {
                         FavoriteLocationObject lastCurrent = getCurrentLocationFromSharedPref(mContext);
                         if (lastCurrent != null) {
-                            startAnimation(lastCurrent.getIcon());
+                            startAnimation(lastCurrent.getCurrentWeatherObject().getWeatherId(),lastCurrent.getIcon());
                         }
                     } else {
                         if (favoriteLocationObject.getCurrentWeatherObject() != null) {
-                            startAnimation(favoriteLocationObject.getIcon());
+                            startAnimation(favoriteLocationObject.getCurrentWeatherObject().getWeatherId(),favoriteLocationObject.getIcon());
                         }
                     }
                 }

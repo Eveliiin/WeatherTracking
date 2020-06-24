@@ -1,4 +1,4 @@
-package com.example.weathertracking.main.favorites;
+package com.example.weathertracking.screen.main.main.favorites;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

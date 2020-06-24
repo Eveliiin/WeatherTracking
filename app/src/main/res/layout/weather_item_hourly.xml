@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     android:width="1dp"
-    android:background="#add8e6"
-    android:color="#000000"
+    android:background="#33add8e6"
     android:orientation="vertical">
 
 <RelativeLayout

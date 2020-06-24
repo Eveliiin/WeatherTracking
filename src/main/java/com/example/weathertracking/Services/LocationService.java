@@ -20,7 +20,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.weathertracking.main.MainActivity;
+import com.example.weathertracking.screen.main.MainActivity;
 
 public class LocationService extends IntentService
 {

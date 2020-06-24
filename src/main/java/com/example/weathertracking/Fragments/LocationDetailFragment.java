@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
 
 import static com.android.volley.VolleyLog.TAG;
 import static com.android.volley.VolleyLog.e;
-import static com.example.weathertracking.main.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.screen.main.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Utils.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.Utils.CurrentLocation.setLastCurrentLocation;

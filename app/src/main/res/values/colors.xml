@@ -3,7 +3,7 @@
     <color name="colorPrimaryLight">#add8e6</color><!-- favorite item-->
     <color name="colorPrimary">#286e84 </color> <!-- tabLayout -->
     <color name="colorPrimaryDark">#1c4d5d </color><!--navigation bar-->
-    <color name="colorPrimaryLight1">#71bcd4</color><!--headers-->
+    <color name="colorPrimaryLight1">#3371bcd4</color><!--headers-->
     <color name="colorAccent">#163d49 </color>
     <color name="colorSilver">#A2A2A1FF </color>
     <color name="colorTurkishSea">#195190FF </color>

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import static com.example.weathertracking.main.MainActivity.isLocationGranted;
+import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

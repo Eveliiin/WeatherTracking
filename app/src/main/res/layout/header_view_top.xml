@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-
         <ImageView
             android:id="@+id/currentWeatherImageView"
             android:layout_width="60dp"
