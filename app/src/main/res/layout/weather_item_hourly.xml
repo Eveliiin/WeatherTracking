@@ -110,7 +110,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="feels like"
+                android:text="Feels like"
                 android:textSize="15sp" />
 
             <TextView
@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="humidity:"
+                android:text="Humidity:"
                 android:textAlignment="center"
                 android:textSize="15sp" />
 
@@ -128,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="pressure:"
+                android:text="Pressure:"
                 android:textAlignment="center"
 
                 android:textSize="15sp" />
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="wind:"
+                android:text="Wind:"
                 android:textAlignment="center"
                 android:textSize="15sp" />
         </TableRow>

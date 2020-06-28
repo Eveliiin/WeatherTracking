@@ -75,6 +75,9 @@ public class FavoriteLocationObject implements Serializable {
                 && distance(simpson.getLatLng(),getLatLng())<10){
             return true;
         }
+        if(locationName==null){
+            return false;
+        }
         return longitude == simpson.longitude &&
                 latitude == latitude &&
                 locationName.equals(simpson.locationName);

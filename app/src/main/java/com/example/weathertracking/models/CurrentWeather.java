@@ -3,6 +3,8 @@ package com.example.weathertracking.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.time.LocalDateTime;
@@ -56,7 +58,7 @@ public class CurrentWeather implements Serializable {
 
     public CurrentWeather(Integer position,String weather, String icon, String minTemp, String maxTemp, String currentTemp, String locationName,int weatherId) {
         this.position=position;
-        this.weather = weather;
+        this.weather = StringUtils.capitalize(weather);
         this.weatherId=weatherId;
         this.icon = icon;
         this.minTemp = minTemp;
@@ -69,7 +71,7 @@ public class CurrentWeather implements Serializable {
         int day = now.getDayOfMonth();
         int hour = now.getHour();
         int minute = now.getMinute();
-        this.lastrefreshDate ="refreshed on "+day+". "+ month+" "+hour+":"+minute;
+        this.lastrefreshDate ="Refreshed on "+day+". "+ month+" "+hour+":"+minute;
     }
 
     public int getWeatherId() {

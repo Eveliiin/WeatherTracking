@@ -24,7 +24,7 @@ public  class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapt
     private  ArrayList<SearchCityObject> mResultsList;
 
     private final LayoutInflater mInflater;
-    Context mContext;
+    private Context mContext;
 
     public SearchResultAdapter(Context context) {
         mContext=context;
@@ -100,9 +100,6 @@ public  class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapt
                     Intent item_clicked = new Intent("LIST_ITEM_CLICKED");
                     item_clicked.putExtra("ITEM",getAdapterPosition());
                     mContext.sendBroadcast(item_clicked);
-
-                    itemView.setBackgroundColor(Color.CYAN);
-
                 }
             });
         }

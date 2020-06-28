@@ -12,6 +12,7 @@ import com.example.weathertracking.R;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
+import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
 
 public class LocationDetailActivity extends AppCompatActivity {
 

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".screen.main.main.favorites.FavoriteLocationsFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background_storm">
     <androidx.appcompat.widget.SearchView
         android:id="@+id/favorite_search"
         android:layout_width="match_parent"

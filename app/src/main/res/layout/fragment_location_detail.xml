@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.PopupOverlay"
-        android:background="@color/colorPrimaryLight1">
+        android:background="@color/colorPrimaryLight20">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"

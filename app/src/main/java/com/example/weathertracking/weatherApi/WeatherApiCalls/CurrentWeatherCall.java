@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.weatherApi.WeatherService;
@@ -22,8 +23,9 @@ import static com.example.weathertracking.weatherApi.WeatherCallMembers.BaseUrl;
 
 
 public class CurrentWeatherCall {
-    public static final int LOCATION_DETAIL_F=-1;
-    public static final int LOCATION_SEARCH_A=-2;
+    public static final int LOCATION_SEARCH_A=-1;
+    public static final int LOCATION_DETAIL_F=-2;
+    public static final int LOCATION_DETAIL_F_C=-3;
 
 
     public static void getCurrentWeatherByLatLng(Context context, LatLng latLng, int position) {
@@ -69,22 +71,16 @@ public class CurrentWeatherCall {
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp - 273)),
                                         currentWeatherCallResult.name,
                                         currentWeatherCallResult.weather.get(0).id);
-                        Intent i;
-                        switch (position) {
-                            case -2:
-                                i = new Intent("CURRENT_WEATHER_SEARCH_A");
-                                break;
-                            case -1:
-                                i = new Intent("CURRENT_WEATHER");
-                                break;
-                            default:
-                                i = new Intent("CURRENT_WEATHER_F");
-                                break;
-
-
+                        Intent i= new Intent();
+                        if(position>-1){
+                            i = new Intent("CURRENT_WEATHER_F");
                         }
+                        else{
+                            i = new Intent("CURRENT_WEATHER"+position);
+                        }
+
                         i.putExtra("CURRENT_WEATHER_OBJECT", currentWeather);
-                        mContext.sendBroadcast(i);
+                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(i);
                     }
                 }
 

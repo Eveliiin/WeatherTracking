@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.weathertracking.models.Forecast;
 import com.example.weathertracking.weatherApi.WeatherService;
@@ -13,6 +14,8 @@ import com.example.weathertracking.weatherApi.WeatherForecastCallResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
@@ -31,16 +34,7 @@ import static com.example.weathertracking.weatherApi.WeatherCallMembers.BaseUrl;
 
 public class WeatherForecastCalls  implements Serializable {
 
-    @SerializedName("GPS")
-    @Expose
-    private  static final String GPS_TYPE ="GPS";
-    @SerializedName("NAME")
-    @Expose
-    private static final String NAME_TYPE ="NAME";
-
-
-
-    public static void getForecastByLatlng(final Context context, LatLng latLng) {
+    public static void getForecastByLatlng(final Context context, LatLng latLng, final int type) {
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BaseUrl)
@@ -68,7 +62,8 @@ public class WeatherForecastCalls  implements Serializable {
                     ArrayList<WeatherForecastObject> tomorrow= new ArrayList<>();
                     ArrayList<WeatherForecastObject> forecast = new ArrayList<>();
                     for(WeatherForecastObject i : hours){
-
+                        i.weather.get(0).main= StringUtils.capitalize(i.weather.get(0).main);
+                        i.weather.get(0).description= StringUtils.capitalize(i.weather.get(0).description);
                         int day = Integer.parseInt(i.dt_txt.substring(8,10));
                         if(currentDay == day )
                         {
@@ -95,10 +90,10 @@ public class WeatherForecastCalls  implements Serializable {
                     }
                     Forecast forecastObject= new Forecast(today,tomorrow,forecast);
 
-                        Intent i = new Intent("WEATHER_OK");
+                        Intent i = new Intent("WEATHER_OK"+type);
                         i.putExtra("LOCATION_NAME",cityName);
                         i.putExtra("FORECAST_OBJECT",forecastObject);
-                        context.sendBroadcast(i);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(i);
                 }
             }
 

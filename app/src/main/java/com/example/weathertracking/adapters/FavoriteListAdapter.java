@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
+import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
 
 public  class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapter.WeatherViewHolder> implements Filterable {

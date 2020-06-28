@@ -51,6 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static com.example.weathertracking.screen.main.main.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
+import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.checkIfIsFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.modifyFavorite;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.LOCATION_SEARCH_A;
@@ -187,8 +188,9 @@ public class LocationSearchActivity extends AppCompatActivity {
     void search(CharSequence s) {
         if (!currentLocationIsUsed) {
             viewWeatherButton.setVisibility(View.INVISIBLE);//kell e ide if vagy nem>
-
+            favoriteSwitch.setOnCheckedChangeListener(null);
             favoriteSwitch.setChecked(false);
+            favoriteSwitch.setOnCheckedChangeListener(switchListener);
             favoriteSwitch.setClickable(false);
             if (currentLocationObject != null) {
                 if (currentLocationObject.getLocationName() != s) {
@@ -223,10 +225,10 @@ public class LocationSearchActivity extends AppCompatActivity {
         if (selecteditemNum != i) {
 
             if (selecteditemNum != NO_ITEM_SELECTED) {//TODO
-                recyclerView.getChildAt(selecteditemNum).setBackgroundColor(Color.parseColor("#ADD8E6"));
+                recyclerView.getChildAt(selecteditemNum).setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryLight20));
             }
             selecteditemNum = i;
-            recyclerView.getChildAt(i).setBackgroundColor(Color.CYAN);
+            recyclerView.getChildAt(i).setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary80));
             selectedLocationObject = new FavoriteLocationObject(locationsForMap.get(i));
             if (isNetwork) {
                 viewWeatherButton.setVisibility(View.VISIBLE);
@@ -241,7 +243,7 @@ public class LocationSearchActivity extends AppCompatActivity {
             favoriteSwitch.setOnCheckedChangeListener(switchListener);
             favoriteSwitch.setClickable(false);
             //Toast.makeText(getApplicationContext(), sele + " deselected!", Toast.LENGTH_SHORT).show();
-            recyclerView.getChildAt(selecteditemNum).setBackgroundColor(Color.parseColor("#ADD8E6"));
+            recyclerView.getChildAt(selecteditemNum).setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryLight20));
             selectedLocationObject = null;
             selecteditemNum = NO_ITEM_SELECTED;
         }
@@ -279,6 +281,12 @@ public class LocationSearchActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(itemClickedReceiver);//TODO nem jo ide
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkActionReceiver);
     }
 
     @Override

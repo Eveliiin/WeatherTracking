@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_margin="3dp"
-    android:background="@color/colorPrimaryLight"
+    android:background="@color/colorPrimaryLight20"
     android:width="1dp"
     >
 
@@ -70,7 +70,7 @@
                 android:id="@+id/minMaxLineView"
                 android:layout_width="50dp"
                 android:layout_height="1dp"
-                android:background="#44a6c6"/>
+                android:background="#33ffffff"/>
             <TextView
                 android:id="@+id/minTemperatureTV"
                 android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#44a6c6"
+        android:background="#3344a6c6"
         android:layout_below="@id/relativeLayout"/>
 
 </RelativeLayout>
