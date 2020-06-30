@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.weathertracking.models.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
+import com.example.weathertracking.models.Forecast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,6 +37,15 @@ public class Favorites  {
 
     }
 
+    public static ArrayList<FavoriteLocationObject> getFavoriteLocationsFromSharedPref(Context ctx) {
+        SharedPreferences prefs = ctx.getSharedPreferences( sharedPrefFile, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(FAVORITE_LIST_KEY,null);
+        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {
+        }.getType();
+        return gson.fromJson(json, type);
+
+    }
     public static void  deleteAll(Context ctx){
 
         mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
@@ -55,6 +66,8 @@ public class Favorites  {
         df = new DecimalFormat("#.##",formatSymbols);
         return df;
     }
+
+
     public static void updateFavorite(FavoriteLocationObject favorite,Context ctx){
 
         mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
@@ -79,6 +92,57 @@ public class Favorites  {
         editor.putString(FAVORITE_LIST_KEY, json);
         editor.apply();
     }
+
+    public static void updateFavoriteCurrentWeather(int index, Context ctx, CurrentWeather currentWeather){
+
+        mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPreferences.edit();
+
+        ArrayList<FavoriteLocationObject> favorites;
+        if(getFavoriteLocationsFromSharedPref(ctx) == null){
+            Log.d("favorites", "Empty favorites array");
+            return;
+        }
+        else {
+            favorites= getFavoriteLocationsFromSharedPref(ctx);
+            if(favorites.get(index)!=null){
+                favorites.get(index).setCurrentWeather(currentWeather);
+            }
+        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {}.getType();
+        String json = gson.toJson(favorites, type);
+
+        editor.putString(FAVORITE_LIST_KEY, json);
+        editor.apply();
+    }
+
+    public static void updateFavoriteForecast(int index, Context ctx, Forecast forecast){
+
+        mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPreferences.edit();
+
+        ArrayList<FavoriteLocationObject> favorites;
+        if(getFavoriteLocationsFromSharedPref(ctx) == null){
+            Log.d("favorites", "Empty favorites array");
+            return;
+        }
+        else {
+            favorites= getFavoriteLocationsFromSharedPref(ctx);
+            if(favorites.get(index)!=null){
+                favorites.get(index).setForecast(forecast);
+            }
+        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {}.getType();
+        String json = gson.toJson(favorites, type);
+
+        editor.putString(FAVORITE_LIST_KEY, json);
+        editor.apply();
+    }
+
     public static void modifyFavorite(FavoriteLocationObject newFavorite, Context ctx) {
 
         //deleteAll(ctx);
@@ -153,6 +217,7 @@ public class Favorites  {
         intent.setAction("REFRESH_FAVORITES");
         ctx.sendBroadcast(intent);
     }
+
     public static void addFavorite(FavoriteLocationObject newFavorite, Context ctx) {
 
         //deleteAll(ctx);
@@ -190,15 +255,8 @@ public class Favorites  {
         intent.setAction("REFRESH_FAVORITES");
         ctx.sendBroadcast(intent);
     }
-    public static ArrayList<FavoriteLocationObject> getFavoriteLocationsFromSharedPref(Context ctx) {
-        SharedPreferences prefs = ctx.getSharedPreferences( sharedPrefFile, MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = prefs.getString(FAVORITE_LIST_KEY,null);
-        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {
-        }.getType();
-        return gson.fromJson(json, type);
 
-    }
+
 
     public static boolean checkIfIsFavorite(FavoriteLocationObject locationToCheck, Context ctx) {
 

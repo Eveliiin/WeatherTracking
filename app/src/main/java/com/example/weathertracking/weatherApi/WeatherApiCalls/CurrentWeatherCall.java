@@ -28,9 +28,9 @@ public class CurrentWeatherCall {
     public static final int LOCATION_DETAIL_F_C=-3;
 
 
-    public static void getCurrentWeatherByLatLng(Context context, LatLng latLng, int position) {
+    public static void getCurrentWeatherByLatLng(Context context, LatLng latLng, int positionOrTypeID) {
 
-        new SimpleAsyncTask(context, latLng, position).execute();//doInBackGroundnak tovabbit a .execute
+        new SimpleAsyncTask(context, latLng, positionOrTypeID).execute();//doInBackGroundnak tovabbit a .execute
     }
 
 
@@ -38,12 +38,12 @@ public class CurrentWeatherCall {
 
         private LatLng latLng;
         private Context mContext;
-        private Integer position;
+        private Integer positionOrTypeID;
 
-        SimpleAsyncTask(Context context, LatLng latLng, int position) {
+        SimpleAsyncTask(Context context, LatLng latLng, int positionOrTypeID) {
             this.latLng = latLng;
             mContext = context;
-            this.position = position;
+            this.positionOrTypeID = positionOrTypeID;
         }
 
         @Override
@@ -63,7 +63,7 @@ public class CurrentWeatherCall {
                         CurrentWeatherCallResult currentWeatherCallResult = response.body();
                         CurrentWeather currentWeather =
                                 new CurrentWeather(
-                                        position,
+                                        positionOrTypeID,
                                         currentWeatherCallResult.weather.get(0).description,
                                         currentWeatherCallResult.weather.get(0).icon,
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp_max - 273)),
@@ -71,12 +71,12 @@ public class CurrentWeatherCall {
                                         String.valueOf(Math.round((double) currentWeatherCallResult.main.temp - 273)),
                                         currentWeatherCallResult.name,
                                         currentWeatherCallResult.weather.get(0).id);
-                        Intent i= new Intent();
-                        if(position>-1){
+                        Intent i;
+                        if(positionOrTypeID>-1){
                             i = new Intent("CURRENT_WEATHER_F");
                         }
                         else{
-                            i = new Intent("CURRENT_WEATHER"+position);
+                            i = new Intent("CURRENT_WEATHER"+positionOrTypeID);
                         }
 
                         i.putExtra("CURRENT_WEATHER_OBJECT", currentWeather);

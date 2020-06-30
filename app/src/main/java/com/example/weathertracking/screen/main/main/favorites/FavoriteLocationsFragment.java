@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -106,7 +107,7 @@ public class FavoriteLocationsFragment extends Fragment {
                 Log.d("Location**"," Favorite locations refresh request received");
             }
         };
-        view.getContext().registerReceiver(refreshReceiver, filter);
+        LocalBroadcastManager.getInstance(view.getContext()).registerReceiver(refreshReceiver, filter);
 
         BroadcastReceiver networkActionReceiver = new BroadcastReceiver() {
             @Override
@@ -122,8 +123,9 @@ public class FavoriteLocationsFragment extends Fragment {
             }
         };
         IntentFilter networkActionFilter = new IntentFilter("NETWORK_ACTION");
-        view.getContext().registerReceiver(networkActionReceiver,networkActionFilter);
+        LocalBroadcastManager.getInstance(view.getContext()).registerReceiver(networkActionReceiver,networkActionFilter);
         uploadFavorites();
+        refreshFavorites();
         return view;
     }
     private void uploadFavorites(){
@@ -133,7 +135,7 @@ public class FavoriteLocationsFragment extends Fragment {
         if(w==null){
             w= new ArrayList<>();
         }
-        adapter.setFavorites(w);
+        adapter.refreshCurrentWeathersInFavorites(w);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setHasFixedSize(true);
@@ -142,12 +144,9 @@ public class FavoriteLocationsFragment extends Fragment {
     private void refreshFavorites(){
         //deleteWhenSwipe(adapter,recyclerView);
 
-        ArrayList<FavoriteLocationObject> w=getFavoriteLocationsFromSharedPref(view.getContext());//TODO view.getContext
-
-        adapter.setFavorites(w);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        recyclerView.setHasFixedSize(true);
+        ArrayList<FavoriteLocationObject> w=getFavoriteLocationsFromSharedPref(view.getContext());
+        adapter.refreshCurrentWeathersInFavorites(w);
+        //todo refreshforecast also
     }
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -187,10 +186,10 @@ public class FavoriteLocationsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Boolean refreshRequired = false;
+        /*
         if(refreshRequired){
             uploadFavorites();
-        }
+        }*/
         if(!isConnectedToInternet()){
             Toast.makeText(view.getContext(),"No internet",Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setEnabled(false);
@@ -215,7 +214,7 @@ public class FavoriteLocationsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+//todo
         view.getContext().unregisterReceiver(refreshReceiver);
     }
 

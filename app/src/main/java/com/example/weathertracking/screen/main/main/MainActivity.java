@@ -119,12 +119,13 @@ public class MainActivity extends AppCompatActivity  {
                 (this, 1, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         final AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 
-        long repeatInterval = AlarmManager.INTERVAL_DAY;
+        long repeatInterval = AlarmManager.INTERVAL_HALF_DAY;
         long triggerTime = SystemClock.elapsedRealtime();
         //+ repeatInterval;
 
         if(alarmManager!=null) {
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, repeatInterval, notifyPendingIntent);
+            //inexact
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime+repeatInterval, repeatInterval, notifyPendingIntent);
         }
     }
 

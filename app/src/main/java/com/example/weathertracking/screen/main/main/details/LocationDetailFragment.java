@@ -60,7 +60,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
     public static final String  FAVORITE_LOCATION_OBJECT = "favorite_location";
     public static final int FAVORITE_LOCATION_OBJECT_TYPE = -2;
-    private static final int CURRENT_LOCATION_TYPE = -3;
+    public static final int CURRENT_LOCATION_TYPE = -3;
 
     @BindView(R.id.toolbar_header_view)
     protected HeaderView toolbarHeaderView;
@@ -136,7 +136,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        initReceivers();
         //getweathers(mContext);
         if (isConnectedToInternet()) {
             if(fragmentType== FAVORITE_LOCATION_OBJECT_TYPE){
@@ -152,11 +152,22 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 }
             }
         } else {
-            if(getCurrentLocationFromSharedPref(mContext) == null) {
-                view = inflater.inflate(R.layout.no_internet_fragment, container, false);
-                loadNoInternetPage("No internet");
+            if(fragmentType==CURRENT_LOCATION_TYPE) {
+                if (getCurrentLocationFromSharedPref(mContext) == null) {
+                    view = inflater.inflate(R.layout.no_internet_fragment, container, false);
+                    loadNoInternetPage("No internet");
+                }
+                else {
+                    view = inflater.inflate(R.layout.fragment_location_detail, container, false);
+                    loadPage();
+                }
+            }
+            else {
+                view = inflater.inflate(R.layout.fragment_location_detail, container, false);
+                loadPage();
             }
         }
+
         return view;
     }
 
@@ -178,7 +189,6 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         tabLayout.addTab(tabLayout.newTab().setText("5days"));
         // Set the tabs to fill the entire layout.
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        initReceivers();
 
         LocalBroadcastManager.getInstance(mContext).registerReceiver(animStartReceiver, animFilter);
         LocalBroadcastManager.getInstance(mContext).registerReceiver(networkActionReceiver, networkActionFilter);
@@ -331,10 +341,9 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
         if (fragmentType==CURRENT_LOCATION_TYPE) {
             setLastCurrentLocationFromSharedpref();
-            if (isLocationGranted) {
+
+            if (isLocationGranted&&isConnectedToInternet()) {
                 getCurrentLocationAndForecast();//First time, the main activity start the location service
-            } else {
-                //Todo
             }
         } else {
             if (favoriteLocationObject.getCurrentWeatherObject() == null) {
