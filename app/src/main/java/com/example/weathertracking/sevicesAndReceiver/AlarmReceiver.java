@@ -11,24 +11,21 @@ import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.models.Forecast;
-import com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
-import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
+import static com.example.weathertracking.ui.main.MainActivity.isLocationGranted;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
-import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationForecast;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.getFavoriteLocationsFromSharedPref;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteForecast;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;

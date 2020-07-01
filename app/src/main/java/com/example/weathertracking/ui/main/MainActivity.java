@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.main;
+package com.example.weathertracking.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,7 +19,7 @@ import android.os.Bundle;
 
 import com.example.weathertracking.adapters.PagerAdapter;
 import com.example.weathertracking.Network.ConnectionStateMonitor;
-import com.example.weathertracking.screen.main.Search.LocationSearchActivity;
+import com.example.weathertracking.ui.search.LocationSearchActivity;
 import com.example.weathertracking.sevicesAndReceiver.AlarmReceiver;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.R;

@@ -1,4 +1,4 @@
-package com.example.weathertracking.Utils;
+package com.example.weathertracking.weatherApi.weatherEffects;
 
 public class Icons {
 

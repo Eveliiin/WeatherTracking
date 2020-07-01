@@ -19,22 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.weathertracking.models.Forecast;
-import com.example.weathertracking.screen.main.main.LocationDetailActivity;
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.ui.main.LocationDetailActivity;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
-import com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall;
-import com.example.weathertracking.Utils.Icons;
+import com.example.weathertracking.weatherApi.weatherEffects.Icons;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
-import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationForecast;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteForecast;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;

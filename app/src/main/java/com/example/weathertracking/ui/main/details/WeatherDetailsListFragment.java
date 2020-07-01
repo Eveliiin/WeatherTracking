@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.main.details;
+package com.example.weathertracking.ui.main.details;
 
 import android.content.Context;
 import android.os.Bundle;

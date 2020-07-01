@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.main.details;
+package com.example.weathertracking.ui.main.details;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,9 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.weathertracking.adapters.WeatherDaysPagerAdapter;
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
+import com.example.weathertracking.ui.main.MainActivity;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.models.Forecast;
 import com.example.weathertracking.proba.HeaderView;
@@ -43,15 +44,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
-import static com.example.weathertracking.screen.main.main.MainActivity.LOCATION_KEY;
-import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.checkIfIsFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.deleteFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
-import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.LOCATION_DETAIL_F;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.WeatherForecastCalls.getForecastByLatlng;
 import static com.example.weathertracking.weatherApi.weatherEffects.WeathersFromJson.getweathers;
@@ -143,7 +141,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
                 view = inflater.inflate(R.layout.fragment_location_detail, container, false);
                 loadPage();
             }else {
-                if (getCurrentLocationFromSharedPref(mContext) == null && !isLocationGranted) {
+                if (getCurrentLocationFromSharedPref(mContext) == null && !MainActivity.isLocationGranted) {
                     view = inflater.inflate(R.layout.no_internet_fragment, container, false);
                     loadNoInternetPage("Please enable location");
                 } else {
@@ -319,7 +317,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         emojiRainLayout.stopDropping();
         if (fragmentType==CURRENT_LOCATION_TYPE) {
 
-            if (isLocationGranted) {
+            if (MainActivity.isLocationGranted) {
                 getCurrentLocationAndForecast();
                 Intent refreshLocationIntent = new Intent(getContext(), LocationService.class);
                 refreshLocationIntent.putExtra("Command", "REFRESH_LOCATION");
@@ -342,7 +340,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         if (fragmentType==CURRENT_LOCATION_TYPE) {
             setLastCurrentLocationFromSharedpref();
 
-            if (isLocationGranted&&isConnectedToInternet()) {
+            if (MainActivity.isLocationGranted&&isConnectedToInternet()) {
                 getCurrentLocationAndForecast();//First time, the main activity start the location service
             }
         } else {
@@ -388,7 +386,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         View.OnClickListener refresh = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isLocationGranted || fragmentType== FAVORITE_LOCATION_OBJECT_TYPE) {
+                if (MainActivity.isLocationGranted || fragmentType== FAVORITE_LOCATION_OBJECT_TYPE) {
                     df = (AnimationDrawable) floatHeaderView.getRefreshIV().getBackground();
                     df.start();
                     if (toolbarHeaderView.getRefreshIV() != null) {
@@ -407,16 +405,16 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         if (toolbarHeaderView.getRefreshIV() != null) {
             toolbarHeaderView.getRefreshIV().setOnClickListener(refresh);
         }
-        if (floatHeaderView.getFavoriteIB() != null) {
-            floatHeaderView.getFavoriteIB().setOnClickListener(new View.OnClickListener() {
+        if (floatHeaderView.getFavoriteIV() != null) {
+            floatHeaderView.getFavoriteIV().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (checkIfIsFavorite(favoriteLocationObject, mContext)) {
                         deleteFavorite(favoriteLocationObject, mContext);
-                        floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                        floatHeaderView.getFavoriteIV().setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     } else {
                         addFavorite(favoriteLocationObject, mContext);
-                        floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
+                        floatHeaderView.getFavoriteIV().setImageResource(R.drawable.ic_favorite_black_24dp);
                     }
                 }
             });
@@ -576,7 +574,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
         };
 
         //current location refreshReceiver
-        locationFilter = new IntentFilter(LOCATION_KEY);
+        locationFilter = new IntentFilter(MainActivity.LOCATION_KEY);
         locationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -614,13 +612,13 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
 
     private void setFavoriteButton() {
         if (checkIfIsFavorite(favoriteLocationObject, mContext)) {
-            if (floatHeaderView.getFavoriteIB() != null) {
-                floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_black_24dp);
+            if (floatHeaderView.getFavoriteIV() != null) {
+                floatHeaderView.getFavoriteIV().setImageResource(R.drawable.ic_favorite_black_24dp);
             }
         } else {
 
-            if (floatHeaderView.getFavoriteIB() != null) {
-                floatHeaderView.getFavoriteIB().setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            if (floatHeaderView.getFavoriteIV() != null) {
+                floatHeaderView.getFavoriteIV().setImageResource(R.drawable.ic_favorite_border_black_24dp);
             }
         }
     }
@@ -649,7 +647,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
     public void onResume() {
         super.onResume();
         if (registerNeeded) {
-            if (isLocationGranted) {
+            if (MainActivity.isLocationGranted) {
                 LocalBroadcastManager.getInstance(mContext).registerReceiver(locationBroadcastReceiver, locationFilter);
                 LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver, cfilter);
                 LocalBroadcastManager.getInstance(mContext).registerReceiver(forecastReceiver, weatherOkFilter);
@@ -662,7 +660,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             hideRefresh();
         }
 
-        if (isLocationGranted && isIsLocationGrantedOnPause == 0) {
+        if (MainActivity.isLocationGranted && isIsLocationGrantedOnPause == 0) {
             isIsLocationGrantedOnPause = 1;
             getActivity().recreate();
         }
@@ -690,7 +688,7 @@ public class LocationDetailFragment extends Fragment implements AppBarLayout.OnO
             e.printStackTrace();
         }
         registerNeeded = true;
-        if (isLocationGranted) {
+        if (MainActivity.isLocationGranted) {
             isIsLocationGrantedOnPause = 1;
         } else {
             isIsLocationGrantedOnPause = 0;

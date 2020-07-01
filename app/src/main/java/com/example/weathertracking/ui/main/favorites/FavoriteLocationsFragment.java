@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.main.favorites;
+package com.example.weathertracking.ui.main.favorites;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -216,6 +216,7 @@ public class FavoriteLocationsFragment extends Fragment {
         super.onDestroy();
 //todo
         view.getContext().unregisterReceiver(refreshReceiver);
+
     }
 
 }

@@ -42,7 +42,7 @@ public class HeaderView extends CoordinatorLayout {
 
     @Nullable
     @BindView(R.id.favorite)
-    ImageView favoriteIB;
+    ImageView favoriteIV;
 
     public HeaderView(Context context) {
         super(context);
@@ -69,8 +69,8 @@ public class HeaderView extends CoordinatorLayout {
     }
 
     @Nullable
-    public ImageView getFavoriteIB() {
-        return favoriteIB;
+    public ImageView getFavoriteIV() {
+        return favoriteIV;
     }
 
     public TextView getLocationNameTV() {

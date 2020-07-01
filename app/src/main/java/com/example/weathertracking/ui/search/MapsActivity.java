@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.Search;
+package com.example.weathertracking.ui.search;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -26,7 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
+import static com.example.weathertracking.ui.main.MainActivity.isLocationGranted;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
