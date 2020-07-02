@@ -18,7 +18,7 @@ import com.example.weathertracking.models.Forecast;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.ui.main.MainActivity.isLocationGranted;
 import static com.example.weathertracking.ui.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
 import static com.example.weathertracking.ui.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;

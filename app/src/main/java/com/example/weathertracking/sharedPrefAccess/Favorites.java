@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
@@ -179,7 +180,7 @@ public class Favorites  {
 
         Intent intent = new Intent();
         intent.setAction("REFRESH_FAVORITES");
-        ctx.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 
     public static void deleteFavorite(FavoriteLocationObject newFavorite, Context ctx) {

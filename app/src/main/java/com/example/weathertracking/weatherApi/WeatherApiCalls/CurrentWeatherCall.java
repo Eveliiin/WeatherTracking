@@ -73,6 +73,7 @@ public class CurrentWeatherCall {
                             i = new Intent("CURRENT_WEATHER_F");
                         }
                         else{
+                            //type
                             i = new Intent("CURRENT_WEATHER"+positionOrTypeID);
                         }
 

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.getFavoriteLocationsFromSharedPref;
 
 
@@ -42,6 +42,7 @@ public class FavoriteLocationsFragment extends Fragment {
     private FavoriteListAdapter adapter;
     private View view;
     private BroadcastReceiver refreshReceiver;
+
 
     @BindView(R.id.recyclerView)
     protected RecyclerView recyclerView;
@@ -86,7 +87,7 @@ public class FavoriteLocationsFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                uploadFavorites();
+                refreshFavorites();
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -103,6 +104,7 @@ public class FavoriteLocationsFragment extends Fragment {
         refreshReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                //if new favorite is added
                 refreshFavorites();
                 Log.d("Location**"," Favorite locations refresh request received");
             }
@@ -124,11 +126,11 @@ public class FavoriteLocationsFragment extends Fragment {
         };
         IntentFilter networkActionFilter = new IntentFilter("NETWORK_ACTION");
         LocalBroadcastManager.getInstance(view.getContext()).registerReceiver(networkActionReceiver,networkActionFilter);
-        uploadFavorites();
         refreshFavorites();
         return view;
     }
-    private void uploadFavorites(){
+
+    private void refreshFavorites(){
         //deleteWhenSwipe(adapter,recyclerView);
 
         ArrayList<FavoriteLocationObject> w=getFavoriteLocationsFromSharedPref(view.getContext());
@@ -139,13 +141,6 @@ public class FavoriteLocationsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setHasFixedSize(true);
-    }
-
-    private void refreshFavorites(){
-        //deleteWhenSwipe(adapter,recyclerView);
-
-        ArrayList<FavoriteLocationObject> w=getFavoriteLocationsFromSharedPref(view.getContext());
-        adapter.refreshCurrentWeathersInFavorites(w);
         //todo refreshforecast also
     }
     @Override
@@ -154,42 +149,12 @@ public class FavoriteLocationsFragment extends Fragment {
 
     }
 
-    /*
-        private void deleteWhenSwipe(final WordListAdapter adapter,RecyclerView recyclerView){
-            // Add the functionality to swipe items in the
-            // recycler view to delete that item
-            ItemTouchHelper helper = new ItemTouchHelper(
-                    new ItemTouchHelper.SimpleCallback(0,
-                            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                        @Override
-                        public boolean onMove(RecyclerView recyclerView,
-                                              RecyclerView.ViewHolder viewHolder,
-                                              RecyclerView.ViewHolder target) {
-                            return false;
-                        }
 
-                        @Override
-                        public void onSwiped(RecyclerView.ViewHolder viewHolder,
-                                             int direction) {
-                            int position = viewHolder.getAdapterPosition();
-                            Word myWord = adapter.getWordAtPosition(position);
-                            Toast.makeText(MainActivity.this, "Deleting " +
-                                    myWord.getWord(), Toast.LENGTH_LONG).show();
-
-                            // Delete the word
-                            mfavoritesViewModel.deleteWord(myWord);
-                        }
-                    });
-
-            helper.attachToRecyclerView(recyclerView);
-        }*/
     @Override
     public void onResume() {
         super.onResume();
-        /*
-        if(refreshRequired){
-            uploadFavorites();
-        }*/
+
+
         if(!isConnectedToInternet()){
             Toast.makeText(view.getContext(),"No internet",Toast.LENGTH_LONG).show();
             mSwipeRefreshLayout.setEnabled(false);
@@ -215,7 +180,7 @@ public class FavoriteLocationsFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 //todo
-        view.getContext().unregisterReceiver(refreshReceiver);
+        LocalBroadcastManager.getInstance(view.getContext()).unregisterReceiver(refreshReceiver);
 
     }
 

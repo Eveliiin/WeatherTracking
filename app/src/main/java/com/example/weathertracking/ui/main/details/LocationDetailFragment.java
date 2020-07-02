@@ -43,7 +43,7 @@ import com.luolc.emojirain.EmojiRainLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;

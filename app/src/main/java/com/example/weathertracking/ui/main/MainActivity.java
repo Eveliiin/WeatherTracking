@@ -18,7 +18,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.weathertracking.adapters.PagerAdapter;
-import com.example.weathertracking.Network.ConnectionStateMonitor;
+import com.example.weathertracking.network.ConnectionStateMonitor;
 import com.example.weathertracking.ui.search.LocationSearchActivity;
 import com.example.weathertracking.sevicesAndReceiver.AlarmReceiver;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
@@ -28,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.SystemClock;
@@ -37,7 +38,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity  {
         tabLayout.getTabAt(0).setText("Locations");
         tabLayout.getTabAt(1).setText("Current Location");
         initNetworkActionReceiver();
-        registerReceiver(networkActionReceiver,networkActionFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(networkActionReceiver,networkActionFilter);
     }
     void initNetworkActionReceiver(){
         //Network action refreshReceiver
