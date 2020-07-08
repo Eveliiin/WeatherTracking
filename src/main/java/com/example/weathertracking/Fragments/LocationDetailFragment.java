@@ -29,11 +29,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
-import com.example.weathertracking.Adapters.WeatherDaysPagerAdapter;
-import com.example.weathertracking.Models.CurrentWeather;
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.adapters.WeatherDaysPagerAdapter;
+import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
-import com.example.weathertracking.Services.LocationService;
+import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.Utils.Forecast;
 import com.example.weathertracking.proba.HeaderView;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
 
 import static com.android.volley.VolleyLog.TAG;
 import static com.android.volley.VolleyLog.e;
-import static com.example.weathertracking.Activities.MainActivity.LOCATION_KEY;
+import static com.example.weathertracking.screen.main.MainActivity.LOCATION_KEY;
 import static com.example.weathertracking.Interfaces.InternetStateListener.isConecctedToInternet;
 import static com.example.weathertracking.Utils.CurrentLocation.getCurrentLocationFromSharedPref;
 import static com.example.weathertracking.Utils.CurrentLocation.setLastCurrentLocation;

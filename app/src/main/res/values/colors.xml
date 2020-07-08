@@ -3,9 +3,39 @@
     <color name="colorPrimaryLight">#add8e6</color><!-- favorite item-->
     <color name="colorPrimary">#286e84 </color> <!-- tabLayout -->
     <color name="colorPrimaryDark">#1c4d5d </color><!--navigation bar-->
-    <color name="colorPrimaryLight1">#71bcd4</color><!--headers-->
+    <color name="colorPrimaryLight20">#3371bcd4</color><!--headers-->
     <color name="colorAccent">#163d49 </color>
     <color name="colorSilver">#A2A2A1FF </color>
     <color name="colorTurkishSea">#195190FF </color>
+    <color name="colorPrimary80">#80286e84 </color> <!-- tabLayout -->
+
+
+    <!-- colours for weather conditons-->
+    <color name="stormTopColor">#4066a4 </color>
+    <color name="stormBottomColor">#cfaea7 </color>
+
+    <color name="drizzleTopColor">#7baabb </color>
+    <color name="drizzleBottomColor">#c2cbca </color>
+
+    <color name="rainTopColor">#496771 </color>
+    <color name="rainBottomColor">#b3d6dc </color>
+
+    <color name="snowTopColor">#99b8cc </color>
+    <color name="snowBottomColor">#f9ffff </color>
+
+    <color name="atmosphereTopColor">#80625f </color><!-- todo szetszedni-->
+    <color name="atmosphereBottomColor">#c3b6b3 </color>
+
+    <color name="clearNightTopColor">#112158 </color>
+    <color name="clearNightBottomColor">#9662a2 </color>
+
+    <color name="clearDayTopColor">#96cdf6 </color>
+    <color name="clearDayBottomColor">#d4e9fa </color>
+
+    <color name="cloudsTopColor">#5494b2 </color>
+    <color name="cloudsBottomColor">#a6bcca </color>
+
+
+
 
 </resources>

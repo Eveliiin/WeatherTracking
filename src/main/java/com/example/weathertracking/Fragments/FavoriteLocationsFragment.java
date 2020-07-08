@@ -23,8 +23,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.widget.Toast;
 
-import com.example.weathertracking.Adapters.FavoriteListAdapter;
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.adapters.FavoriteListAdapter;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 
 import java.util.ArrayList;

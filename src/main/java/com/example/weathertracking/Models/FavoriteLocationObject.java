@@ -1,4 +1,4 @@
-package com.example.weathertracking.Models;
+package com.example.weathertracking.models;
 
 import androidx.annotation.Nullable;
 

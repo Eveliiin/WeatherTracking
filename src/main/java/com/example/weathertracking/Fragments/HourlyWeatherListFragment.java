@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.weathertracking.Models.HourlyWeather;
+import com.example.weathertracking.models.HourlyWeather;
 import com.example.weathertracking.R;
 
 import java.util.List;

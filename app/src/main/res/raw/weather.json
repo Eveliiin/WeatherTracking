@@ -1,0 +1,452 @@
+[
+  {
+    "code": "200",
+    "description": "thunderstorm with light rain",
+    "icon": "11d",
+    "startHex": "#dbd730",
+    "endHex": "#5a6167"
+  },
+  {
+    "code": "201",
+    "description": "thunderstorm with rain",
+    "icon": "11d",
+    "startHex": "#cfcb2c",
+    "endHex": "#454a4f",
+    "rain": "6"
+  },
+  {
+    "code": "202",
+    "description": "thunderstorm with heavy rain",
+    "icon": "11d",
+    "startHex": "#b8b42e",
+    "endHex": "#36383b",
+    "rain": "8"
+  },
+  {
+    "code": "210",
+    "description": "light thunderstorm",
+    "icon": "11d",
+    "startHex": "#c2bd1a",
+    "endHex": "#acacac"
+  },
+  {
+    "code": "211",
+    "description": "thunderstorm",
+    "icon": "11d",
+    "startHex": "#bbb84c",
+    "endHex": "#7c7d7d"
+  },
+  {
+    "code": "212",
+    "description": "heavy thunderstorm",
+    "icon": "11d",
+    "startHex": "#e7e21b",
+    "endHex": "#939698"
+  },
+  {
+    "code": "221",
+    "description": "ragged thunderstorm",
+    "icon": "11d",
+    "startHex": "#ede81c",
+    "endHex": "#787d81"
+  },
+  {
+    "code": "230",
+    "description": "thunderstorm with light drizzle",
+    "icon": "11d",
+    "startHex": "#dbd730",
+    "endHex": "#5a6167",
+    "rain": "1"
+  },
+  {
+    "code": "231",
+    "description": "thunderstorm with drizzle",
+    "icon": "11d",
+    "startHex": "#cfcb2c",
+    "endHex": "#454a4f",
+    "rain": "2"
+  },
+  {
+    "code": "232",
+    "description": "thunderstorm with heavy drizzle",
+    "icon": "11d",
+    "startHex": "#b8b42e",
+    "endHex": "#36383b",
+    "rain": "3"
+  },
+  {
+    "code": "300",
+    "description": "light intensity drizzle",
+    "icon": "09d",
+    "startHex": "#b8d6db",
+    "endHex": "#98c6c2"
+  },
+  {
+    "code": "301",
+    "description": "drizzle",
+    "icon": "09d",
+    "startHex": "#a1c2ca",
+    "endHex": "#8cc0bb"
+  },
+  {
+    "code": "302",
+    "description": "heavy intensity drizzle",
+    "icon": "09d",
+    "startHex": "#85aab6",
+    "endHex": "#75b4ad"
+  },
+  {
+    "code": "310",
+    "description": "light intensity drizzle rain",
+    "icon": "09d",
+    "startHex": "#769dab",
+    "endHex": "#69aea6"
+  },
+  {
+    "code": "311",
+    "description": "drizzle rain",
+    "icon": "09d",
+    "startHex": "#7baabb",
+    "endHex": "#188276",
+    "rain": "1"
+  },
+  {
+    "code": "312",
+    "description": "heavy intensity drizzle rain",
+    "icon": "09d",
+    "startHex": "#a1c2ca",
+    "endHex": "#8cc0bb",
+    "rain": "3"
+  },
+  {
+    "code": "313",
+    "description": "shower rain and drizzle",
+    "icon": "09d",
+    "startHex": "#85aab6",
+    "endHex": "#75b4ad",
+    "rain": "4"
+  },
+  {
+    "code": "314",
+    "description": "heavy shower rain and drizzle",
+    "icon": "09d",
+    "startHex": "#769dab",
+    "endHex": "#69aea6",
+    "rain": "6"
+  },
+  {
+    "code": "321",
+    "description": "shower drizzle",
+    "icon": "09d",
+    "startHex": "#bad3dd",
+    "endHex": "#69aea6"
+  },
+  {
+    "code": "500",
+    "description": "light rain",
+    "icon": "10d",
+    "startHex": "#bad3dd",
+    "endHex": "#6baca5",
+    "rain": "2"
+  },
+  {
+    "code": "501",
+    "description": "moderate rain",
+    "icon": "10d",
+    "startHex": "#bad3dd",
+    "endHex": "#72b4ad",
+    "rain": "3"
+  },
+  {
+    "code": "502",
+    "description": "heavy intensity rain",
+    "icon": "10d",
+    "startHex": "#abc1c9",
+    "endHex": "#70ada7",
+    "rain": "7"
+  },
+  {
+    "code": "503",
+    "description": "very heavy rain",
+    "icon": "10d",
+    "startHex": "#8a979c",
+    "endHex": "#6a9f9a",
+    "rain": "8"
+  },
+  {
+    "code": "504",
+    "description": "extreme rain",
+    "icon": "10d",
+    "startHex": "#6c7375",
+    "endHex": "#6a9f9a",
+    "rain": "10"
+  },
+  {
+    "code": "511",
+    "description": "freezing rain",
+    "icon": "13d",
+    "startHex": "#6c7376",
+    "endHex": "#a5f0e9",
+    "rain": "4",
+    "snow": "2"
+  },
+  {
+    "code": "520",
+    "description": "light intensity shower rain",
+    "icon": "09d",
+    "startHex": "#769dab",
+    "endHex": "#69aea6",
+    "rain": "4"
+  },
+  {
+    "code": "521",
+    "description": "shower rain",
+    "icon": "09d",
+    "startHex": "#7baabb",
+    "endHex": "#188276",
+    "rain": "6"
+  },
+  {
+    "code": "522",
+    "description": "heavy intensity shower rain",
+    "icon": "09d",
+    "startHex": "#a1c2ca",
+    "endHex": "#8cc0bb",
+    "rain": "7"
+  },
+  {
+    "code": "531",
+    "description": "ragged shower rain",
+    "icon": "09d",
+    "startHex": "#a1c2ca",
+    "endHex": "#8cc0bb",
+    "rain": "7"
+  },
+  {
+    "code": "600",
+    "description": "light snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#b1ccdd",
+    "snow": "3"
+  },
+  {
+    "code": "601",
+    "description": "Snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#99b8cc",
+    "snow": "5"
+  },
+  {
+    "code": "602",
+    "description": "Heavy snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#92d4ff",
+    "snow": "10"
+  },
+  {
+    "code": "611",
+    "description": "Sleet",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#9dc6e2"
+  },
+  {
+    "code": "612",
+    "description": "Light shower sleet",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#aadcff"
+  },
+  {
+    "code": "613",
+    "description": "Shower sleet",
+    "icon": "13d",
+    "startHex": "#d7f0ff",
+    "endHex": "#aadcff"
+  },
+  {
+    "code": "615",
+    "description": "Light rain and snow",
+    "icon": "13d",
+    "startHex": "#f5fbff",
+    "endHex": "#83b4b4",
+    "rain": "2",
+    "snow": "4"
+  },
+  {
+    "code": "616",
+    "description": "Rain and snow",
+    "icon": "13d",
+    "startHex": "#f5fbff",
+    "endHex": "#69abab",
+    "rain": "4",
+    "snow": "4"
+  },
+  {
+    "code": "620",
+    "description": "Light shower snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#aec9da",
+    "snow": "2"
+  },
+  {
+    "code": "621",
+    "description": "Shower snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#c3dded",
+    "snow": "3"
+  },
+  {
+    "code": "622",
+    "description": "Heavy shower snow",
+    "icon": "13d",
+    "startHex": "#f9ffff",
+    "endHex": "#a6cce3",
+    "snow": "5"
+  },
+  {
+    "code": "701",
+    "description": "mist",
+    "icon": "50d",
+    "startHex": "#718b99",
+    "endHex": "#e6f1f1"
+  },
+  {
+    "code": "711",
+    "description": "smoke",
+    "icon": "50d",
+    "startHex": "#e9e9e9",
+    "endHex": "#787878"
+  },
+  {
+    "code": "721",
+    "description": "haze",
+    "icon": "50d",
+    "startHex": "# e6e8e3",
+    "endHex": "# 788086"
+  },
+  {
+    "code": "731",
+    "description": "sand/dust whirls",
+    "icon": "50d",
+    "startHex": "#ffa474",
+    "endHex": "#e97f55"
+  },
+  {
+    "code": "741",
+    "description": "fog",
+    "icon": "50d",
+    "startHex": "#e3e5f4",
+    "endHex": "#8990aa"
+  },
+  {
+    "code": "751",
+    "description": "sand",
+    "icon": "50d",
+    "startHex": "#fdffd0",
+    "endHex": "#e5bd80"
+  },
+  {
+    "code": "761",
+    "description": "dust",
+    "icon": "50d",
+    "startHex": "#ecdcc3",
+    "endHex": "#bfbab5"
+  },
+  {
+    "code": "762",
+    "description": "vulcanic ash",
+    "icon": "50d",
+    "startHex": "#e3e5f4",
+    "endHex": "#7b6e66"
+  },
+  {
+    "code": "771",
+    "description": "squalls",
+    "icon": "50d",
+    "startHex": "#a3d3e1",
+    "endHex": "#d6e0e2"
+  },
+  {
+    "code": "781",
+    "description": "tornado",
+    "icon": "50d",
+    "startHex": "#faefe9",
+    "endHex": "#a78270"
+  },
+  {
+    "code": "800d",
+    "description": "clear",
+    "icon": "01d",
+    "startHex": "#f5ae95",
+    "endHex": "#54b2f9"
+  },
+  {
+    "code": "800n",
+    "description": "clear",
+    "icon": "01n",
+    "startHex": "#9662a2",
+    "endHex": "#112158"
+  },
+  {
+    "code": "801d",
+    "description": "few clouds: 11-25%",
+    "icon": "02n",
+    "startHex": "#9eb1bf",
+    "endHex": "#112158"
+  },
+  {
+    "code": "801n",
+    "description": "few clouds: 11-25%",
+    "icon": "02d",
+    "startHex": "#54b2f8",
+    "endHex": "#76a3be"
+  },
+  {
+    "code": "802d",
+    "description": "scattered clouds: 25-50%",
+    "icon": "03d",
+    "startHex": "#909ca4",
+    "endHex": "#112158"
+  },
+  {
+    "code": "802n",
+    "description": "scattered clouds: 25-50%",
+    "icon": "03n",
+    "startHex": "#54b2f8",
+    "endHex": "#6f8898"
+  },
+  {
+    "code": "803d",
+    "description": "broken clouds: 51-84%",
+    "icon": "04d",
+    "startHex": "#7c8387",
+    "endHex": "#112158"
+  },
+  {
+    "code": "803n",
+    "description": "broken clouds: 51-84%",
+    "icon": "04n",
+    "startHex": "#87929a",
+    "endHex": "#2e97e7"
+  },
+  {
+    "code": "804d",
+    "description": "overcast clouds: 85-100%",
+    "icon": "04d",
+    "startHex": "#666c6f",
+    "endHex": "#112158"
+  },
+  {
+    "code": "804n",
+    "description": "overcast clouds: 85-100%",
+    "icon": "04n",
+    "startHex": "#505c65",
+    "endHex": "#2e97e7"
+  }
+]

@@ -1,4 +1,4 @@
-package com.example.weathertracking.Adapters;
+package com.example.weathertracking.adapters;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

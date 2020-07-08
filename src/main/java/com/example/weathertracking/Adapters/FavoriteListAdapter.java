@@ -1,4 +1,4 @@
-package com.example.weathertracking.Adapters;
+package com.example.weathertracking.adapters;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,9 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.weathertracking.Activities.LocationDetailActivity;
-import com.example.weathertracking.Models.CurrentWeather;
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.screen.main.LocationDetailActivity;
+import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 import com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall;
 import com.example.weathertracking.WeatherApiCalls.Icons;

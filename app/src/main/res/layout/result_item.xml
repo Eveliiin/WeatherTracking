@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="3dp"
     android:padding="12dp"
-    android:background="#add8e6"
+    android:background="@color/colorPrimaryLight20"
     >
         <TextView
             android:id="@+id/nameTextView"

@@ -1,4 +1,4 @@
-package com.example.weathertracking.Services;
+package com.example.weathertracking.sevicesAndReceiver;
 
 
 import android.content.BroadcastReceiver;

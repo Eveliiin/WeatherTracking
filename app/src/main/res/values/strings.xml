@@ -16,4 +16,23 @@
     <string name="title_activity_maps">Map</string>
     <string name="base_url">https://api.openweathermap.org/</string>
     <string name="iconDescription">my precious icon</string>
+    <string name="location_name_too_short">Location name is too short!</string>
+    <string name="NETWORK_ACTION">NETWORK_ACTION</string>
+    <string name="DISCONNECTED">DISCONNECTED</string>
+
+    <string name="disconnected_select_from_list">no internet, select a location form list or reconnect to the internet</string>
+    <string name="disconnected_and_exit">no internet, return to the main page</string>
+    <string name="reconnected_message">successfully reconnected!</string>
+
+    <string name="RECONNECTED">RECONNECTED</string>
+    <string name="CHOOSED_LOCATION">CHOOSED_LOCATION</string>
+    <string name="CURRENT_WEATHER_SEARCH_A">CURRENT_WEATHER_SEARCH_A</string>
+    <string name="SELECTED_LOCATION_OBJECT">SELECTED_LOCATION_OBJECT</string>
+
+    <string name="COMMAND">Command</string>
+    <string name="REFRESH_LOCATION">REFRESH_LOCATION</string>
+    <string name="CURRENT_WEATHER_OBJECT">CURRENT_WEATHER_OBJECT</string>
+    <string name="TYPE">TYPE</string>
+    <string name="START_ANIMATION">START_ANIMATION</string>
+
 </resources>

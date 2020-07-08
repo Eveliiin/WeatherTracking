@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.weathertracking.proba.HeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.weathertracking.proba.HeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
@@ -17,7 +18,6 @@
             android:layout_height="70dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/w01d"
             android:contentDescription="@string/iconDescription" /><!--Todo ? -->
 
         <TextView
@@ -29,8 +29,8 @@
             android:layout_toStartOf="@id/refreshImageView"
             android:gravity="center"
             android:layout_marginStart="10dp"
-            android:text="Szép, napos idő"
             android:textSize="25dp"
+            android:text="thunderstorm with heavy rain"
             android:layout_below="@id/locationTextView"
             />
         <TextView
@@ -43,7 +43,7 @@
             android:layout_toEndOf="@id/currentDegreeTV"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="SUSSENNIddddddddddddddI"
+            android:text="Current location"
             android:textSize="30sp" />
 
         <ImageView
@@ -51,7 +51,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/favorite"
+            android:layout_alignBottom="@id/currentWeather"
             android:background="@drawable/refreshing"
 
             />
@@ -61,7 +61,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/currentWeatherImageView"
             android:layout_marginStart="10dp"
-            android:text="70° C"
             android:textSize="30sp"
             android:gravity="center"
             />
@@ -76,6 +75,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@id/locationTextView"
             android:layout_alignBottom="@id/locationTextView"
+            android:src="@drawable/ic_favorite_black_24dp"
             android:gravity="center" />
         <TextView
             android:id="@+id/lastRefreshDateTextView"
@@ -85,9 +85,9 @@
             android:layout_below="@id/refreshImageView"
             android:layout_alignParentEnd="true"
             android:layout_alignStart="@id/currentWeather"
-            android:text="Hétfő, 13:33"
             android:gravity="end"
             android:textSize="18dp"
+            android:text="lkjhgfdsdghjklkjhgcvbnmkjhg"
             />
     </RelativeLayout>
 </com.example.weathertracking.proba.HeaderView>

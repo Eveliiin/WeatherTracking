@@ -1,11 +1,11 @@
-package com.example.weathertracking.Activities;
+package com.example.weathertracking.screen.main;
 
 
 import android.os.Bundle;
 import android.util.Log;
 
 
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.Fragments.LocationDetailFragment;
 import com.example.weathertracking.R;
 

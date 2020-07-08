@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     android:width="1dp"
-    android:background="#add8e6"
-    android:color="#000000"
+    android:background="#33add8e6"
     android:orientation="vertical">
 
 <RelativeLayout
@@ -111,7 +110,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="feels like"
+                android:text="Feels like"
                 android:textSize="15sp" />
 
             <TextView
@@ -119,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="humidity:"
+                android:text="Humidity:"
                 android:textAlignment="center"
                 android:textSize="15sp" />
 
@@ -129,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="pressure:"
+                android:text="Pressure:"
                 android:textAlignment="center"
 
                 android:textSize="15sp" />
@@ -140,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="wind:"
+                android:text="Wind:"
                 android:textAlignment="center"
                 android:textSize="15sp" />
         </TableRow>

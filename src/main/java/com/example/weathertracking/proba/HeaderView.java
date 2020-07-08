@@ -15,7 +15,7 @@ import com.example.weathertracking.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Adapters.FavoriteListAdapter.changeIcon;
+import static com.example.weathertracking.adapters.FavoriteListAdapter.changeIcon;
 
 public class HeaderView extends CoordinatorLayout {
 

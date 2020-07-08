@@ -1,4 +1,4 @@
-package com.example.weathertracking.Adapters;
+package com.example.weathertracking.adapters;
 
 import android.content.Context;
 import android.content.Intent;

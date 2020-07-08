@@ -1,4 +1,4 @@
-package com.example.weathertracking.Models;
+package com.example.weathertracking.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

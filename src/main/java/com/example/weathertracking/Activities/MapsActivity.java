@@ -1,4 +1,4 @@
-package com.example.weathertracking.Activities;
+package com.example.weathertracking.screen.main;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.weathertracking.Models.FavoriteLocationObject;
+import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
