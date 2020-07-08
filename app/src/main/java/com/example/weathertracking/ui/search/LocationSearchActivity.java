@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.Search;
+package com.example.weathertracking.ui.search;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,11 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.weathertracking.adapters.SearchResultAdapter;
-import com.example.weathertracking.screen.main.main.LocationDetailActivity;
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.ui.main.LocationDetailActivity;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
+import com.example.weathertracking.ui.main.MainActivity;
+import com.example.weathertracking.ui.main.details.LocationDetailFragment;
 import com.example.weathertracking.weatherApi.WeatherService;
 import com.example.weathertracking.weatherApi.SearchCityObject;
 import com.example.weathertracking.weatherApi.SearchCityCallResult;
@@ -48,13 +50,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.weathertracking.screen.main.main.MainActivity.LOCATION_KEY;
-import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
+import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.checkIfIsFavorite;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.modifyFavorite;
-import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.LOCATION_SEARCH_A;
+import static com.example.weathertracking.sharedPrefAccess.Favorites.deleteFavorite;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
 import static com.example.weathertracking.weatherApi.WeatherCallMembers.AppId;
 import static com.example.weathertracking.weatherApi.WeatherCallMembers.BaseUrl;
@@ -120,7 +119,11 @@ public class LocationSearchActivity extends AppCompatActivity {
         switchListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                modifyFavorite(locationsForMap.get(selecteditemNum), getBaseContext());
+                if(checkIfIsFavorite(locationsForMap.get(selecteditemNum),getBaseContext())){
+                    deleteFavorite(locationsForMap.get(selecteditemNum),getBaseContext());
+                }else {
+                    addFavorite(locationsForMap.get(selecteditemNum),getBaseContext());
+                }
             }
         };
 
@@ -150,7 +153,7 @@ public class LocationSearchActivity extends AppCompatActivity {
         currentLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isLocationGranted) {
+                if(MainActivity.isLocationGranted) {
                     currentLocationButton.setClickable(false);
                     locationEditText.setEnabled(false);
                     locationEditText.setText("");
@@ -173,9 +176,9 @@ public class LocationSearchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(LocationSearchActivity.this, LocationDetailActivity.class);
                 if (currentLocationObject != null) {//current location
-                    i.putExtra(FAVORITE_LOCATION_OBJECT, currentLocationObject);
+                    i.putExtra(LocationDetailFragment.FAVORITE_LOCATION_OBJECT, currentLocationObject);
                 } else {// TODO terkep hosszan??//from list
-                    i.putExtra(FAVORITE_LOCATION_OBJECT, selectedLocationObject);
+                    i.putExtra(LocationDetailFragment.FAVORITE_LOCATION_OBJECT, selectedLocationObject);
                 }
                 startActivity(i);
                 //overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
@@ -265,8 +268,8 @@ public class LocationSearchActivity extends AppCompatActivity {
     private void setCurrentWeatherReceiver() {
         //current weather receiver
 
-        registerReceiver(currentWeatherReceiver, currentWeatherFilter);
-        getCurrentWeatherByLatLng(getApplicationContext(), currentLocationObject.getLatLng(), LOCATION_SEARCH_A);
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(currentWeatherReceiver, currentWeatherFilter);
+        getCurrentWeatherByLatLng(getApplicationContext(), currentLocationObject.getLatLng(), CURRENT_LOCATION_TYPE);
     }
 
     void clearRecyclerView() {
@@ -306,10 +309,10 @@ public class LocationSearchActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            isLocationGranted=true;
+            MainActivity.isLocationGranted=true;
         }
         else {
-            isLocationGranted=false;
+            MainActivity.isLocationGranted=false;
         }
     }
 
@@ -380,13 +383,13 @@ public class LocationSearchActivity extends AppCompatActivity {
     private void initReceivers() {
 
         //CurrentWeather, needed for locationName, and view weather option
-        currentWeatherFilter = new IntentFilter(getString(R.string.CURRENT_WEATHER_SEARCH_A));
+        currentWeatherFilter = new IntentFilter("CURRENT_WEATHER"+CURRENT_LOCATION_TYPE);
         currentWeatherReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
 
-                if (getString(R.string.CURRENT_WEATHER_SEARCH_A).equals(action)) {
+                if (("CURRENT_WEATHER"+CURRENT_LOCATION_TYPE).equals(action)) {
 
                     CurrentWeather currentWeather = (CurrentWeather) intent.getSerializableExtra(getString(R.string.CURRENT_WEATHER_OBJECT));
                     currentLocationObject.setCurrentWeather(currentWeather);
@@ -400,8 +403,9 @@ public class LocationSearchActivity extends AppCompatActivity {
                     viewWeatherButton.setVisibility(View.VISIBLE);
                     favoriteCheck(currentLocationObject);
                     try {
-                        context.unregisterReceiver(currentWeatherReceiver);
-                    } catch (Exception e) {
+                        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(currentWeatherReceiver);
+                    }
+                    catch (Exception e){
                         e.printStackTrace();
                     }
                 }
@@ -454,7 +458,7 @@ public class LocationSearchActivity extends AppCompatActivity {
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(locationReceiver);
             }
         };
-        intentFilter = new IntentFilter(LOCATION_KEY);
+        intentFilter = new IntentFilter(MainActivity.LOCATION_KEY);
 
         //search locations button
         choosedLocationReceiver = new BroadcastReceiver() {

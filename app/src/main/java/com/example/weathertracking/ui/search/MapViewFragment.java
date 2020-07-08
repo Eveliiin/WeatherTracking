@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.Search;
+package com.example.weathertracking.ui.search;
 
 import android.Manifest;
 import android.os.Bundle;

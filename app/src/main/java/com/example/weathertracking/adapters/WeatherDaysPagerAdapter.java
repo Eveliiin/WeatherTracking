@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
-import com.example.weathertracking.screen.main.main.details.WeatherDetailsListFragment;
+import com.example.weathertracking.ui.main.details.WeatherDetailsListFragment;
 
 import java.util.List;
 

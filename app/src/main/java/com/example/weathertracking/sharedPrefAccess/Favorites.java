@@ -8,8 +8,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.models.Forecast;
 import com.google.gson.Gson;
@@ -143,45 +144,6 @@ public class Favorites  {
         editor.apply();
     }
 
-    public static void modifyFavorite(FavoriteLocationObject newFavorite, Context ctx) {
-
-        //deleteAll(ctx);
-
-        newFavorite.setLatLng(Double.parseDouble(df.format(newFavorite.getLatitude())),Double.parseDouble(df.format(newFavorite.getLongitude())));
-
-        mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
-        SharedPreferences.Editor editor = mPreferences.edit();
-
-        ArrayList<FavoriteLocationObject> favorites= new ArrayList<FavoriteLocationObject>() {};
-        if(getFavoriteLocationsFromSharedPref(ctx) == null){
-            Log.d("favorites", "Empty favorites array");
-            favorites.add(newFavorite);
-            Toast.makeText(ctx,newFavorite.getLocationName()+ " added to favorites",Toast.LENGTH_SHORT).show();
-        }
-        else {
-            favorites= getFavoriteLocationsFromSharedPref(ctx);
-            if(favorites.contains(newFavorite)){
-                Toast.makeText(ctx,newFavorite.getLocationName()+ " removed from favorites",Toast.LENGTH_SHORT).show();
-                favorites.remove(newFavorite);
-            }
-            else {
-                favorites.add(newFavorite);
-                Toast.makeText(ctx,newFavorite.getLocationName()+ " added to favorites",Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {}.getType();
-        String json = gson.toJson(favorites, type);
-
-        editor.putString(FAVORITE_LIST_KEY, json);
-        editor.apply();
-
-        Intent intent = new Intent();
-        intent.setAction("REFRESH_FAVORITES");
-        ctx.sendBroadcast(intent);
-    }
-
     public static void deleteFavorite(FavoriteLocationObject newFavorite, Context ctx) {
 
         //deleteAll(ctx);
@@ -215,7 +177,7 @@ public class Favorites  {
 
         Intent intent = new Intent();
         intent.setAction("REFRESH_FAVORITES");
-        ctx.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 
     public static void addFavorite(FavoriteLocationObject newFavorite, Context ctx) {
@@ -253,7 +215,7 @@ public class Favorites  {
 
         Intent intent = new Intent();
         intent.setAction("REFRESH_FAVORITES");
-        ctx.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
 
 
@@ -274,31 +236,42 @@ public class Favorites  {
         return favorites.contains(locationToCheck);
     }
 
-    public void deleteOneFavorite(String favoriteToDelete,Context ctx) {
+    public static void modifyFavorite(FavoriteLocationObject newFavorite, Context ctx) {
 
-        SharedPreferences.Editor editor = ctx.getSharedPreferences(FAVORITE_LIST_KEY, MODE_PRIVATE).edit();
-        ArrayList<FavoriteLocationObject> favorites= new ArrayList<FavoriteLocationObject>() {
-        };
-        try {
-            favorites = getFavoriteLocationsFromSharedPref(ctx);
-        } catch (Exception e) {
-            Log.e("favorites", "Empty favorites array");
+        //deleteAll(ctx);
+
+        newFavorite.setLatLng(Double.parseDouble(df.format(newFavorite.getLatitude())),Double.parseDouble(df.format(newFavorite.getLongitude())));
+
+        mPreferences = ctx.getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        SharedPreferences.Editor editor = mPreferences.edit();
+
+        ArrayList<FavoriteLocationObject> favorites= new ArrayList<FavoriteLocationObject>() {};
+        if(getFavoriteLocationsFromSharedPref(ctx) == null){
+            Log.d("favorites", "Empty favorites array");
+            favorites.add(newFavorite);
+            Toast.makeText(ctx,newFavorite.getLocationName()+ " added to favorites",Toast.LENGTH_SHORT).show();
         }
-
-        try{
-            favorites.remove(favoriteToDelete);
-
-        }
-        catch ( Exception e)
-        {
-            e.printStackTrace();
+        else {
+            favorites= getFavoriteLocationsFromSharedPref(ctx);
+            if(favorites.contains(newFavorite)){
+                Toast.makeText(ctx,newFavorite.getLocationName()+ " removed from favorites",Toast.LENGTH_SHORT).show();
+                favorites.remove(newFavorite);
+            }
+            else {
+                favorites.add(newFavorite);
+                Toast.makeText(ctx,newFavorite.getLocationName()+ " added to favorites",Toast.LENGTH_SHORT).show();
+            }
         }
 
         Gson gson = new Gson();
-        String json = gson.toJson(favorites);
+        Type type = new TypeToken<ArrayList<FavoriteLocationObject>>() {}.getType();
+        String json = gson.toJson(favorites, type);
+
         editor.putString(FAVORITE_LIST_KEY, json);
         editor.apply();
+
+        Intent intent = new Intent();
+        intent.setAction("REFRESH_FAVORITES");
+        LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent);
     }
-
-
 }

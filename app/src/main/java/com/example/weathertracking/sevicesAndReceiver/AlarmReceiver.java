@@ -1,7 +1,6 @@
 package com.example.weathertracking.sevicesAndReceiver;
 
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,24 +10,20 @@ import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.models.Forecast;
-import com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
-import static com.example.weathertracking.screen.main.main.MainActivity.isLocationGranted;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.ui.main.MainActivity.isLocationGranted;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.getCurrentLocationFromSharedPref;
-import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocation;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationForecast;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.getFavoriteLocationsFromSharedPref;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteForecast;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
@@ -158,17 +153,5 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
         };
     }
-    public static boolean isAppRunning(final Context context, final String packageName) {
-        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-        if (procInfos != null)
-        {
-            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
-                if (processInfo.processName.equals(packageName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 }

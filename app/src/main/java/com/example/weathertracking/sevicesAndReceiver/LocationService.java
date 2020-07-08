@@ -19,12 +19,11 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.weathertracking.screen.main.main.MainActivity;
+import com.example.weathertracking.ui.main.MainActivity;
 import com.example.weathertracking.R;
 
 public class LocationService extends IntentService
 {
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
 
     private static final int TEN_MINUTES = 1000 * 60 * 1;

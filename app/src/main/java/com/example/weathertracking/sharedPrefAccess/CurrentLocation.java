@@ -3,7 +3,7 @@ package com.example.weathertracking.sharedPrefAccess;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.models.Forecast;
 import com.google.gson.Gson;

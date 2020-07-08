@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.weatherApi.WeatherService;
 import com.example.weathertracking.weatherApi.CurrentWeatherCallResult;
 import com.google.android.gms.maps.model.LatLng;
@@ -23,9 +23,6 @@ import static com.example.weathertracking.weatherApi.WeatherCallMembers.BaseUrl;
 
 
 public class CurrentWeatherCall {
-    public static final int LOCATION_SEARCH_A=-1;
-    public static final int LOCATION_DETAIL_F=-2;
-    public static final int LOCATION_DETAIL_F_C=-3;
 
 
     public static void getCurrentWeatherByLatLng(Context context, LatLng latLng, int positionOrTypeID) {
@@ -76,6 +73,7 @@ public class CurrentWeatherCall {
                             i = new Intent("CURRENT_WEATHER_F");
                         }
                         else{
+                            //type
                             i = new Intent("CURRENT_WEATHER"+positionOrTypeID);
                         }
 

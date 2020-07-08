@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.weathertracking.models.HourlyWeather;
 import com.example.weathertracking.R;
 import com.example.weathertracking.weatherApi.WeatherForecastObject;
-import com.example.weathertracking.Utils.Icons;
+import com.example.weathertracking.weatherApi.weatherEffects.Icons;
 
 import java.util.ArrayList;
 import java.util.List;

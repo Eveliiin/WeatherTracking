@@ -2,6 +2,7 @@ package com.example.weathertracking.models;
 
 import androidx.annotation.Nullable;
 
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

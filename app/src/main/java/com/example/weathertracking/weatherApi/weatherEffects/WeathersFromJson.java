@@ -27,7 +27,7 @@ public class WeathersFromJson {
     private  Context context;
     private static Map<String, WeatherColours> map;
 
-    public WeathersFromJson(Context context) {
+    private WeathersFromJson(Context context) {
         this.context=context;
         try {
             readJsonStream(context);

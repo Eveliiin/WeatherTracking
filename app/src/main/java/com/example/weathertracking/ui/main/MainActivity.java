@@ -1,4 +1,4 @@
-package com.example.weathertracking.screen.main.main;
+package com.example.weathertracking.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,8 +18,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.weathertracking.adapters.PagerAdapter;
-import com.example.weathertracking.Network.ConnectionStateMonitor;
-import com.example.weathertracking.screen.main.Search.LocationSearchActivity;
+import com.example.weathertracking.network.ConnectionStateMonitor;
+import com.example.weathertracking.ui.search.LocationSearchActivity;
 import com.example.weathertracking.sevicesAndReceiver.AlarmReceiver;
 import com.example.weathertracking.sevicesAndReceiver.LocationService;
 import com.example.weathertracking.R;
@@ -28,6 +28,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.SystemClock;
@@ -37,7 +38,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.weathertracking.Network.ConnectionStateMonitor.isConnectedToInternet;
+import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 
 
 public class MainActivity extends AppCompatActivity  {
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity  {
         tabLayout.getTabAt(0).setText("Locations");
         tabLayout.getTabAt(1).setText("Current Location");
         initNetworkActionReceiver();
-        registerReceiver(networkActionReceiver,networkActionFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(networkActionReceiver,networkActionFilter);
     }
     void initNetworkActionReceiver(){
         //Network action refreshReceiver
@@ -181,10 +182,6 @@ public class MainActivity extends AppCompatActivity  {
 
                     locatonSearchFab.setClickable(true);
                     locatonSearchFab.setBackgroundColor(Color.LTGRAY);
-                    if(isConnectionLost) {
-                        Toast.makeText(getApplicationContext(), "reconnected", Toast.LENGTH_LONG).show();
-                        isConnectionLost =false;
-                    }
                 }
                 else {
                     if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
@@ -196,24 +193,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         };
         networkActionFilter = new IntentFilter("NETWORK_ACTION");
-    }
-
-    public class NotificationBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive (Context context , Intent intent) {
-            String action = intent.getAction() ;
-            if (LOCATION_KEY.equals(action)) {
-
-                //TODO ???
-                Intent closeIntent = new Intent(context, LocationService.class);
-                closeIntent.putExtra("Command","STOP");
-                context.startService(closeIntent);
-                Intent i = new Intent(context, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("message","Notification closed");
-                context.startActivity(i);
-            }
-        }
     }
 
     public  boolean checkLocationPermission2() {
@@ -265,10 +244,12 @@ public class MainActivity extends AppCompatActivity  {
                 isLocationGranted = true;
                 // permission was granted, yay! Do the
                 // location-related task you need to do.
+
                 if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
 
+                    recreate();
                     startLocationService();
                     //Request location updates:
                     //locationManager.requestLocationUpdates(provider, 400, 1, this);

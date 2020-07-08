@@ -19,22 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.weathertracking.models.Forecast;
-import com.example.weathertracking.screen.main.main.LocationDetailActivity;
-import com.example.weathertracking.models.CurrentWeather;
+import com.example.weathertracking.ui.main.LocationDetailActivity;
+import com.example.weathertracking.weatherApi.CurrentWeather;
 import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.R;
-import com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall;
-import com.example.weathertracking.Utils.Icons;
+import com.example.weathertracking.weatherApi.weatherEffects.Icons;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
-import static com.example.weathertracking.screen.main.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT_TYPE;
-import static com.example.weathertracking.sharedPrefAccess.CurrentLocation.setLastCurrentLocationForecast;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavorite;
+import static com.example.weathertracking.ui.main.details.LocationDetailFragment.FAVORITE_LOCATION_OBJECT;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteCurrentWeather;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.updateFavoriteForecast;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
@@ -48,8 +43,11 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
     private final LayoutInflater mInflater;
     private Context mContext;
     private int weatherSetNum;
+    private int forecastSetNum;
     private IntentFilter filter;
     private BroadcastReceiver currentWeatherReceiver;
+    private boolean currentWeatherReceiverIsRegistered=false;
+    private boolean forecastReceiverIsRegistered=false;
     private IntentFilter weatherOkFilter;
     private BroadcastReceiver forecastReceiver;
     private Hashtable<String, WeatherViewHolder> holderHashtable = new Hashtable<>();
@@ -60,6 +58,7 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         mContext = context;
         this.mInflater = LayoutInflater.from(context);
         weatherSetNum = 0;
+        forecastSetNum=0;
         initReceiver();
     }
 
@@ -69,9 +68,13 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         mFavoritesFull = new ArrayList<>(mFavorites);
         if (holderHashtable.size() == 0) {
 
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver, filter);
+            if(!currentWeatherReceiverIsRegistered) {
+                LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver, filter);
+                currentWeatherReceiverIsRegistered=true;
+            }
 
             weatherSetNum = 0;
+            forecastSetNum= 0;
             mFavorites = new ArrayList<>(favorites);
         }
         isBinded = new ArrayList<>();
@@ -79,6 +82,7 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
             isBinded.add(i, false);
         }
         weatherSetNum = 0;
+        forecastSetNum=0;
     }
 
     @Override
@@ -103,17 +107,16 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
 
         if (isBinded.size() < position) {
 
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver,filter);
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(forecastReceiver,weatherOkFilter);
+            registerCurrentWeatherReceiver();
+            registerForecastReceiver();
             getCurrentWeatherByLatLng(mContext, currentFavorite.getLatLng(), position);
             getForecastByLatlng(mContext, currentFavorite.getLatLng(), position);
             isBinded.add(position, true);
-
         }
         if (!isBinded.get(position)) {
 
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver,filter);
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(forecastReceiver,weatherOkFilter);
+            registerCurrentWeatherReceiver();
+            registerForecastReceiver();
 
             getCurrentWeatherByLatLng(mContext, currentFavorite.getLatLng(), position);
             getForecastByLatlng(mContext, currentFavorite.getLatLng(), position);
@@ -130,8 +133,8 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         }
         //
         else {
+            registerCurrentWeatherReceiver();
             getCurrentWeatherByLatLng(mContext, currentFavorite.getLatLng(), position);
-            LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver,filter);
         }
 
         holder.weatherLocationItemView.setText(location);
@@ -146,6 +149,18 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         //holder.iconImageView.setImageDrawable();
     }
 
+    private void registerCurrentWeatherReceiver(){
+        if(!currentWeatherReceiverIsRegistered) {
+            LocalBroadcastManager.getInstance(mContext).registerReceiver(currentWeatherReceiver, filter);
+            currentWeatherReceiverIsRegistered=true;
+        }
+    }
+    private void registerForecastReceiver(){
+        if(!forecastReceiverIsRegistered) {
+            LocalBroadcastManager.getInstance(mContext).registerReceiver(forecastReceiver, weatherOkFilter);
+            forecastReceiverIsRegistered=true;
+        }
+    }
 
     private void initReceiver() {
 
@@ -168,10 +183,11 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
                         changeIcon(mContext, locationWiconsHashTable.get(mFavorites.get(index)), mFavorites.get(index).getIcon());
                         weatherSetNum++;
                         if (weatherSetNum == mFavoritesFull.size()) {
+                            currentWeatherReceiverIsRegistered=false;
                             LocalBroadcastManager.getInstance(mContext).unregisterReceiver(currentWeatherReceiver);
                             Intent intenty = new Intent();
                             intent.setAction("REFRESH_FAVORITES");
-                            mContext.sendBroadcast(intenty);
+                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intenty);
                             //todo i$$$$$$$$$$ide az updatet
                         }
                         notifyDataSetChanged();
@@ -190,10 +206,14 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
 
                 String action = intent.getAction();
                 if ("WEATHER_OK_FAVORITE_LIST".equals(action)) {
+                    forecastSetNum++;
                     Forecast forecast = (Forecast) intent.getSerializableExtra("FORECAST_OBJECT");
                     int index = intent.getIntExtra("INDEX", -1);
                     if (index > -1) {
                         updateFavoriteForecast(index, mContext, forecast);
+                        if(forecastSetNum==mFavoritesFull.size()){
+                            LocalBroadcastManager.getInstance(mContext).unregisterReceiver(forecastReceiver);
+                        }
                     }
 
                 }

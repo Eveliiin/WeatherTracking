@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="15dp"
     android:layout_centerVertical="true"
-    tools:context=".screen.main.Search.LocationSearchActivity"
+    tools:context=".ui.search.LocationSearchActivity"
     android:background="@drawable/background_storm"
     >
 

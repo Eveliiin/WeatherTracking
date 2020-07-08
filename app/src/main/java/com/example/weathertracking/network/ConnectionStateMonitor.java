@@ -1,7 +1,8 @@
-package com.example.weathertracking.Network;
+package com.example.weathertracking.network;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -9,6 +10,7 @@ import android.net.NetworkRequest;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.IOException;
 
@@ -40,9 +42,9 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
     public void onAvailable(Network network) {
         // Do what you need to do here
 
-        Intent noInternetIntent = new Intent("NETWORK_ACTION");
-        noInternetIntent.putExtra("TYPE","RECONNECTED");
-        context.sendBroadcast(noInternetIntent);
+        Intent availableIntent = new Intent("NETWORK_ACTION");
+        availableIntent.putExtra("TYPE","RECONNECTED");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(availableIntent);
     }
 
     @Override//ez
@@ -53,7 +55,7 @@ public class ConnectionStateMonitor extends ConnectivityManager.NetworkCallback 
 
             Intent noInternetIntent = new Intent("NETWORK_ACTION");
             noInternetIntent.putExtra("TYPE", "DISCONNECTED");
-            context.sendBroadcast(noInternetIntent);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(noInternetIntent);
         }
     }
 

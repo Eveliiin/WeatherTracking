@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.weathertracking.screen.main.main.favorites.FavoriteLocationsFragment;
-import com.example.weathertracking.screen.main.main.details.LocationDetailFragment;
+import com.example.weathertracking.ui.main.favorites.FavoriteLocationsFragment;
+import com.example.weathertracking.ui.main.details.LocationDetailFragment;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
