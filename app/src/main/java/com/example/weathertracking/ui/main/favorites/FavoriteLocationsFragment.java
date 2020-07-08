@@ -179,8 +179,6 @@ public class FavoriteLocationsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//todo
-        LocalBroadcastManager.getInstance(view.getContext()).unregisterReceiver(refreshReceiver);
 
     }
 

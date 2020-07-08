@@ -183,6 +183,7 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
                         changeIcon(mContext, locationWiconsHashTable.get(mFavorites.get(index)), mFavorites.get(index).getIcon());
                         weatherSetNum++;
                         if (weatherSetNum == mFavoritesFull.size()) {
+                            currentWeatherReceiverIsRegistered=false;
                             LocalBroadcastManager.getInstance(mContext).unregisterReceiver(currentWeatherReceiver);
                             Intent intenty = new Intent();
                             intent.setAction("REFRESH_FAVORITES");

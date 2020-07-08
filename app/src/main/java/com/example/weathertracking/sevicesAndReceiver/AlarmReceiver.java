@@ -1,7 +1,6 @@
 package com.example.weathertracking.sevicesAndReceiver;
 
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import com.example.weathertracking.models.FavoriteLocationObject;
 import com.example.weathertracking.models.Forecast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.weathertracking.network.ConnectionStateMonitor.isConnectedToInternet;
 import static com.example.weathertracking.ui.main.MainActivity.isLocationGranted;
@@ -155,17 +153,5 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
         };
     }
-    public static boolean isAppRunning(final Context context, final String packageName) {
-        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
-        if (procInfos != null)
-        {
-            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
-                if (processInfo.processName.equals(packageName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 }

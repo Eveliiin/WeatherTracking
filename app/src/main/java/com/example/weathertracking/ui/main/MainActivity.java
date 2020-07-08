@@ -182,10 +182,6 @@ public class MainActivity extends AppCompatActivity  {
 
                     locatonSearchFab.setClickable(true);
                     locatonSearchFab.setBackgroundColor(Color.LTGRAY);
-                    if(isConnectionLost) {
-                        Toast.makeText(getApplicationContext(), "reconnected", Toast.LENGTH_LONG).show();
-                        isConnectionLost =false;
-                    }
                 }
                 else {
                     if("RECONNECTED".equals(intent.getStringExtra("TYPE"))){
@@ -197,24 +193,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         };
         networkActionFilter = new IntentFilter("NETWORK_ACTION");
-    }
-
-    public class NotificationBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive (Context context , Intent intent) {
-            String action = intent.getAction() ;
-            if (LOCATION_KEY.equals(action)) {
-
-                //TODO ???
-                Intent closeIntent = new Intent(context, LocationService.class);
-                closeIntent.putExtra("Command","STOP");
-                context.startService(closeIntent);
-                Intent i = new Intent(context, MainActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("message","Notification closed");
-                context.startActivity(i);
-            }
-        }
     }
 
     public  boolean checkLocationPermission2() {
@@ -266,10 +244,12 @@ public class MainActivity extends AppCompatActivity  {
                 isLocationGranted = true;
                 // permission was granted, yay! Do the
                 // location-related task you need to do.
+
                 if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
 
+                    recreate();
                     startLocationService();
                     //Request location updates:
                     //locationManager.requestLocationUpdates(provider, 400, 1, this);

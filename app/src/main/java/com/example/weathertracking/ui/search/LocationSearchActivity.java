@@ -50,8 +50,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.weathertracking.sharedPrefAccess.Favorites.addFavorite;
 import static com.example.weathertracking.sharedPrefAccess.Favorites.checkIfIsFavorite;
-import static com.example.weathertracking.sharedPrefAccess.Favorites.modifyFavorite;
+import static com.example.weathertracking.sharedPrefAccess.Favorites.deleteFavorite;
 import static com.example.weathertracking.ui.main.details.LocationDetailFragment.CURRENT_LOCATION_TYPE;
 import static com.example.weathertracking.weatherApi.WeatherApiCalls.CurrentWeatherCall.getCurrentWeatherByLatLng;
 import static com.example.weathertracking.weatherApi.WeatherCallMembers.AppId;
@@ -118,7 +119,11 @@ public class LocationSearchActivity extends AppCompatActivity {
         switchListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                modifyFavorite(locationsForMap.get(selecteditemNum), getBaseContext());
+                if(checkIfIsFavorite(locationsForMap.get(selecteditemNum),getBaseContext())){
+                    deleteFavorite(locationsForMap.get(selecteditemNum),getBaseContext());
+                }else {
+                    addFavorite(locationsForMap.get(selecteditemNum),getBaseContext());
+                }
             }
         };
 
